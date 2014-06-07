@@ -11,7 +11,7 @@
 /dev/video12              0660   system     system
 /dev/video16              0660   system     system
 /dev/video20              0660   system     system
-/dev/fimg2d               0660   system     graphics
+/dev/fimg2d               0666   system     graphics
 /dev/i2c-2                0660   system     system
 /dev/i2c-5                0660   system     system
 # HDMI DDC
@@ -25,7 +25,7 @@
 /dev/srp                  0660   system     audio
 /dev/srp_ctrl             0660   system     audio
 /dev/umts*                0660   system     radio
-/dev/block/mmcblk0p4	  0660	 system	    radio
+/dev/block/mmcblk0p4	  0660	 system	    system
 
 # ipc / modem
 /dev/block/mmcblk0p4      0660   system     root

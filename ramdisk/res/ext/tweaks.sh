@@ -77,3 +77,6 @@ echo HRTICK > /sys/kernel/debug/sched_features
 # LMK minfree
 echo "12288,15360,18432,21504,24576,30720" > /sys/module/lowmemorykiller/parameters/minfree
 
+# Incremento de memoria ram
+/sbin/busybox setprop dalvik.vm.heapsize 192m
+
