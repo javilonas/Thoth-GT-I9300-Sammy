@@ -36,7 +36,6 @@
 #include <linux/mm.h>
 #include <linux/oom.h>
 #include <linux/sched.h>
-#include <linux/rcupdate.h>
 #include <linux/notifier.h>
 
 #ifdef CONFIG_ZSWAP
@@ -238,7 +237,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	atomic_set(&s_reclaim.lmk_running, 1);
 #endif /* CONFIG_ZRAM_FOR_ANDROID */
-	rcu_read_lock();
+	read_lock(&tasklist_lock);
 	for_each_process(p) {
 		struct mm_struct *mm;
 		struct signal_struct *sig;
@@ -322,7 +321,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 				selected_oom_adj[i], selected_tasksize[i]);
 			lowmem_deathpending[i] = selected[i];
 			lowmem_deathpending_timeout = jiffies + HZ;
-			send_sig(SIGKILL, selected[i], 0);
+			force_sig(SIGKILL, selected[i]);
 			rem -= selected_tasksize[i];
 #ifdef LMK_COUNT_READ
 			lmk_count++;
@@ -336,7 +335,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			     selected_oom_adj, selected_tasksize);
 		lowmem_deathpending = selected;
 		lowmem_deathpending_timeout = jiffies + HZ;
-		send_sig(SIGKILL, selected, 0);
+		force_sig(SIGKILL, selected);
 		rem -= selected_tasksize;
 #ifdef LMK_COUNT_READ
 		lmk_count++;
@@ -345,7 +344,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 #endif
 	lowmem_print(4, "lowmem_shrink %lu, %x, return %d\n",
 		     sc->nr_to_scan, sc->gfp_mask, rem);
-	rcu_read_unlock();
+	read_unlock(&tasklist_lock);
 
 #ifdef CONFIG_ZRAM_FOR_ANDROID
 	atomic_set(&s_reclaim.lmk_running, 0);
