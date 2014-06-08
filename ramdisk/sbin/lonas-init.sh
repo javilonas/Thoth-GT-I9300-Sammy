@@ -64,9 +64,6 @@ sync
 # Iniciar Tweaks Lonas_KL
 /res/ext/tweaks.sh
 
-# Iniciar Relax
-/res/ext/relax.sh
-
 # Iniciar Sensor
 /res/ext/sensors.sh
 
@@ -84,9 +81,6 @@ done
 
 # Iniciar efs_backup
 /res/ext/efs_backup.sh
-
-# Iniciar Liberar Memoria
-/res/ext/libera_ram.sh
 
 /sbin/busybox sleep 2
 
