@@ -241,6 +241,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 	rcu_read_lock();
 	for_each_process(tsk) {
 		struct task_struct *p;
+		struct signal_struct *sig;
 		int oom_adj;
 
 #ifdef ENHANCED_LMK_ROUTINE
@@ -250,7 +251,12 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		if (!p)
 			continue;
 
-		oom_adj = p->signal->oom_adj;
+		sig = p->signal;
+		if (!sig) {
+			task_unlock(p);
+			continue;
+		}
+		oom_adj = sig->oom_adj;
 		if (oom_adj < min_adj) {
 			task_unlock(p);
 			continue;
