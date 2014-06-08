@@ -39,6 +39,8 @@ if [ ! -f /system/xbin/su ] && [ ! -f /system/bin/su ]; then
 
 fi
 
+sync
+
 # Detectar y generar INIT.D
 /res/ext/init_d.sh
 
@@ -56,6 +58,8 @@ fi
 
 # Remontar y Optimizar particiones con EXT4
 /res/ext/optimi_remount.sh
+
+/res/ext/android_ssusbcon.sh
 
 # Iniciar Tweaks Lonas_KL
 /res/ext/tweaks.sh

@@ -12,9 +12,6 @@ echo "0" > /proc/sys/vm/drop_caches
 #disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
-#Mali 400MP GPU threshold
-echo "40% 32% 60% 55% 60% 55% 60% 55%" > /sys/class/misc/gpu_control/gpu_clock_control
-
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
 
