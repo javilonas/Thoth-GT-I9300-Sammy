@@ -21,11 +21,8 @@
 
 #include "gpu_control.h"
 
-#define MIN_VOLTAGE_GPU  800000
-#define MAX_VOLTAGE_GPU 1200000
-
 #define GPU_MAX_CLOCK 800
-#define GPU_MIN_CLOCK 10
+#define GPU_MIN_CLOCK 54
 #if defined(CONFIG_CPU_EXYNOS4212) || defined(CONFIG_CPU_EXYNOS4412)
 #define MALI_STEPS 5
 #else
@@ -39,6 +36,9 @@ typedef struct mali_dvfs_tableTag{
     unsigned int downthreshold;
     unsigned int upthreshold;
 }mali_dvfs_table;
+
+// Global voltage delta to be applied to voltage resets
+int gpu_voltage_delta;
 
 extern mali_dvfs_table mali_dvfs[MALI_STEPS];
 unsigned int gv[MALI_STEPS];
@@ -189,7 +189,7 @@ static ssize_t gpu_clock_store(struct device *dev, struct device_attribute *attr
         return count;
 }
 
-// Yank555.lu : Add available frequencies sysfs entry (similar to what we have for CPU)
+// Add available frequencies sysfs entry (similar to what we have for CPU)
 static ssize_t available_frequencies_show(struct device *dev, struct device_attribute *attr, char *buf) {
 
         int i, len = 0;
@@ -207,6 +207,37 @@ static ssize_t available_frequencies_show(struct device *dev, struct device_attr
 
 }
 
+// add a global voltage delta to be applied to all automatic voltage resets
+static ssize_t gpu_voltage_delta_show(struct device *dev, struct device_attribute *attr, char *buf) {
+
+  return sprintf(buf, "%d\n", gpu_voltage_delta);
+
+}
+
+static ssize_t gpu_voltage_delta_store(struct device *dev, struct device_attribute *attr, const char *buf,
+                  size_t count) {
+  int data;
+  unsigned int ret;
+
+  ret = sscanf(buf, "%d\n", &data);
+
+  if (!ret) {
+    return -EINVAL;
+  }
+
+  if (data >= -250000 && data <= 250000) {
+    gpu_voltage_delta = data;
+    // update mali dvfs table
+    mali_dvfs_table_update();
+    return count;
+  }
+
+  return -EINVAL;
+
+}
+
+static DEVICE_ATTR(gpu_voltage_delta, S_IRUGO | S_IWUGO, gpu_voltage_delta_show, gpu_voltage_delta_store);
+
 static DEVICE_ATTR(gpu_voltage_control, S_IRUGO | S_IWUGO, gpu_voltage_show, gpu_voltage_store);
 static DEVICE_ATTR(gpu_clock_control, S_IRUGO | S_IWUGO, gpu_clock_show, gpu_clock_store);
 static DEVICE_ATTR(available_frequencies, S_IRUGO, available_frequencies_show, NULL);
@@ -215,6 +246,7 @@ static struct attribute *gpu_control_attributes[] = {
         &dev_attr_gpu_voltage_control.attr,
         &dev_attr_gpu_clock_control.attr,
 	&dev_attr_available_frequencies.attr,
+	&dev_attr_gpu_voltage_delta.attr,
         NULL
 };
 
