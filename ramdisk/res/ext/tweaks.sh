@@ -9,8 +9,17 @@ echo "3" > /proc/sys/vm/drop_caches
 sleep 1
 echo "0" > /proc/sys/vm/drop_caches
 
-#disable cpuidle log
+# disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
+
+# Mali uV Default (uV off)
+echo "875000 900000 950000 1025000 1075000" > /sys/class/misc/gpu_control/gpu_voltage_control
+
+# Mali GPU_threshold Ahorro Batería
+echo "50% 42% 70% 65% 70% 65% 70% 65%" > /sys/class/misc/gpu_control/gpu_clock_control
+
+# Mali GPU_Control 640 MHz (ideal para Gamers)
+echo "266 350 440 533 640" > /sys/class/misc/gpu_control/gpu_clock_control
 
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
@@ -73,7 +82,4 @@ echo HRTICK > /sys/kernel/debug/sched_features
 
 # LMK minfree
 echo "12288,15360,18432,21504,24576,30720" > /sys/module/lowmemorykiller/parameters/minfree
-
-# Incremento de memoria ram
-/sbin/busybox setprop dalvik.vm.heapsize 192m
 
