@@ -4,7 +4,8 @@
 #
 
 # CACHE AUTO CLEAN
-sync
+
+echo "0" > /proc/sys/vm/swappiness
 echo "3" > /proc/sys/vm/drop_caches
 sleep 1
 echo "0" > /proc/sys/vm/drop_caches
@@ -13,7 +14,7 @@ echo "0" > /proc/sys/vm/drop_caches
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
 # Mali GPU_threshold Ahorro Batería
-echo "70% 62% 90% 85% 90% 85% 90% 85%" > /sys/class/misc/gpu_control/gpu_clock_control
+echo "60% 52% 80% 75% 80% 75% 80% 75%" > /sys/class/misc/gpu_control/gpu_clock_control
 
 # Mali GPU_Control 640 MHz (ideal para Gamers)
 echo "266 350 440 533 640" > /sys/class/misc/gpu_control/gpu_clock_control
