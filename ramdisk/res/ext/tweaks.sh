@@ -14,7 +14,7 @@ echo "0" > /proc/sys/vm/drop_caches
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
 # Mali GPU_threshold Ahorro Batería
-echo "60% 52% 80% 75% 80% 75% 80% 75%" > /sys/class/misc/gpu_control/gpu_clock_control
+echo "50% 42% 70% 65% 70% 65% 70% 65%" > /sys/class/misc/gpu_control/gpu_clock_control
 
 # Mali GPU_Control 640 MHz (ideal para Gamers)
 echo "266 350 440 533 640" > /sys/class/misc/gpu_control/gpu_clock_control
@@ -36,13 +36,13 @@ echo "2" > /proc/sys/net/ipv4/tcp_syn_retries
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout
 echo "2" > /proc/sys/net/ipv4/tcp_ecn
-echo "524288" > /proc/sys/net/core/wmem_max
-echo "524288" > /proc/sys/net/core/rmem_max
+echo "262144" > /proc/sys/net/core/wmem_max
+echo "262144" > /proc/sys/net/core/rmem_max
 echo "262144" > /proc/sys/net/core/rmem_default
 echo "262144" > /proc/sys/net/core/wmem_default
 echo "20480" > /proc/sys/net/core/optmem_max
-echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_wmem
-echo "6144 87380 524288" > /proc/sys/net/ipv4/tcp_rmem
+echo "4096 87380 8388608" > /proc/sys/net/ipv4/tcp_wmem
+echo "4096 87380 8388608" > /proc/sys/net/ipv4/tcp_rmem
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min
 
