@@ -14,10 +14,10 @@ echo "0" > /proc/sys/vm/drop_caches
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
 # Mali GPU_threshold Ahorro Batería
-echo "50% 42% 70% 65% 70% 65% 70% 65%" > /sys/class/misc/gpu_control/gpu_clock_control
+echo "72% 64% 92% 87% 92% 87% 92% 87%" > /sys/class/misc/gpu_control/gpu_clock_control
 
-# Mali GPU_Control 640 MHz (ideal para Gamers)
-echo "266 350 440 533 640" > /sys/class/misc/gpu_control/gpu_clock_control
+# Mali GPU_Control 533 MHz (Por defecto)
+echo "160 266 350 440 533" > /sys/class/misc/gpu_control/gpu_clock_control
 
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
