@@ -13,6 +13,9 @@ echo "0" > /proc/sys/vm/drop_caches
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
+# Mali GPU uV/OC (Por defecto)
+echo "875000 900000 950000 1025000 1075000" > /sys/class/misc/gpu_control/gpu_voltage_control
+
 # Mali GPU_threshold Ahorro Batería
 echo "72% 64% 92% 87% 92% 87% 92% 87%" > /sys/class/misc/gpu_control/gpu_clock_control
 
