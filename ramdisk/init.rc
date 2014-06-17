@@ -8,6 +8,7 @@ import /init.environ.rc
 import /init.usb.rc
 import /init.${ro.hardware}.rc
 import /init.trace.rc
+import /init.carrier.rc
 import /init.container.rc
 
 on early-init
@@ -29,15 +30,17 @@ on early-init
     chown system system /sys/fs/selinux/commit_pending_bools
 
 on init
+    exec /sbin/ffu -u
     setenforce 0
     setprop ro.boot.selinux 0
     sysclktz 0
+
     loglevel 3
 
 # for audit message 
     chown system system /proc/avc_msg
     chmod 0660 /proc/avc_msg
-#WTL_EDM
+
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -100,7 +103,7 @@ on init
     write /proc/sys/kernel/kptr_restrict 2
     write /proc/sys/kernel/dmesg_restrict 1
     write /proc/sys/vm/mmap_min_addr 32768
-	write /proc/sys/net/ipv4/ping_group_range "0 2147483647"
+    write /proc/sys/net/ipv4/ping_group_range "0 2147483647"
     write /proc/sys/kernel/sched_rt_runtime_us 950000
     write /proc/sys/kernel/sched_rt_period_us 1000000
 
@@ -193,11 +196,16 @@ on post-fs
 on post-fs-data
     # Reload SE Android Policy
     setprop selinux.reload_policy 1
+
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
     # We restorecon /data in case the userdata partition has been reset.
     restorecon /data
+    restorecon /data/lost+found
+
+    # Avoid predictable entropy pool. Carry over entropy from previous boot.
+    copy /data/system/entropy.dat /dev/urandom
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
@@ -234,7 +242,6 @@ on post-fs-data
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
     mkdir /data/misc/dhcp 0770 dhcp dhcp
-    # give system access to wpa_supplicant.conf for backup and restore
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0751 root root
     mkdir /data/misc/media 0700 media media
@@ -337,10 +344,9 @@ on post-fs-data
     chmod 0660 /dev/usb_mtp_gadget
     chown system mtp /dev/usb_mtp_gadget
 
- 	# Separate location for storing security policy files on data
-
-    mkdir /data/security 0711 system system
-    mkdir /data/security/spota 0711 system system
+    # Separate location for storing security policy files on data
+    mkdir /data/security 0700 system system
+    mkdir /data/security/spota 0700 system system
     mkdir /data/security/booleans 0711 system system
     mkdir /data/security/good 0700 system system
     mkdir /data/security/stig 0700 system system
@@ -539,6 +545,7 @@ on boot
 # Set these so we can remotely update SELinux policy
     chown system system /sys/fs/selinux/load
     chown system system /sys/fs/selinux/enforce
+
 # Permissions for Camera
     chown system radio /sys/class/camera/rear/rear_camfw
     chown system radio /sys/class/camera/rear/rear_camtype

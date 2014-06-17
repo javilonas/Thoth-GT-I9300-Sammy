@@ -8,7 +8,6 @@ on early-init
     mkdir /tombstones
 
 on init
-
     # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/media_rw/extSdCard 0700 media_rw media_rw
     mkdir /mnt/media_rw/UsbDriveA 0700 media_rw media_rw
@@ -18,24 +17,24 @@ on init
     mkdir /mnt/media_rw/UsbDriveE 0700 media_rw media_rw
     mkdir /mnt/media_rw/UsbDriveF 0700 media_rw media_rw
 
+    # Set permissions for persist partition
+    mkdir /persist 0771 system system
     # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /mnt/shell/container 0700 system system
     mkdir /storage/emulated 0555 root root
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
 
+    export SECONDARY_STORAGE /storage/extSdCard
+    mkdir /storage/extSdCard 0555 root root
+
     # Support legacy paths
     symlink /storage/emulated/legacy /sdcard
     symlink /storage/emulated/legacy /mnt/sdcard
     symlink /storage/emulated/legacy /storage/sdcard0
     symlink /mnt/shell/emulated/0 /storage/emulated/legacy
-    symlink /mnt/shell/container /storage/container
-
-    export SECONDARY_STORAGE /storage/extSdCard
-    mkdir /storage/extSdCard 0555 root root
 
     # map "real" external storages paths also in same way. backwards compatibility.
     symlink /storage/extSdCard /mnt/extSdCard
@@ -140,7 +139,6 @@ on post-fs-data
 
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
-#    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor pegasusq
 
 # for AT distributor
     chown system radio /sys/module/cpuidle_exynos4/parameters/enable_mask
@@ -173,6 +171,10 @@ on boot
 
 # <Sensors & NFC>
 # Input Events
+    chown system radio /sys/class/input/input0/enable
+    chown system radio /sys/class/input/input0/poll_delay
+    chown system radio /sys/class/input/input1/enable
+    chown system radio /sys/class/input/input1/poll_delay
     chown system radio /sys/class/input/input2/enable
     chown system radio /sys/class/input/input2/poll_delay
     chown system radio /sys/class/input/input3/enable
@@ -189,6 +191,53 @@ on boot
     chown system radio /sys/class/input/input8/poll_delay
     chown system radio /sys/class/input/input9/enable
     chown system radio /sys/class/input/input9/poll_delay
+
+#
+# sensors sysfs attributes.  input devices are created dynamically 
+# so we can't be sure which is which.  this is a bit of a hack until 
+# (and if) init is modified to handle uevents (or ueventd is modified 
+# to support sysfs).
+    chown input input /sys/class/input/event0/device/enable
+    chown input input /sys/class/input/event1/device/enable
+    chown input input /sys/class/input/event2/device/enable
+    chown input input /sys/class/input/event3/device/enable
+    chown input input /sys/class/input/event4/device/enable
+    chown input input /sys/class/input/event5/device/enable
+    chown input input /sys/class/input/event6/device/enable
+    chown input input /sys/class/input/event7/device/enable
+    chown input input /sys/class/input/event8/device/enable
+    chown input input /sys/class/input/event9/device/enable
+    chmod 660 /sys/class/input/event0/device/enable
+    chmod 660 /sys/class/input/event1/device/enable
+    chmod 660 /sys/class/input/event2/device/enable
+    chmod 660 /sys/class/input/event3/device/enable
+    chmod 660 /sys/class/input/event4/device/enable
+    chmod 660 /sys/class/input/event5/device/enable
+    chmod 660 /sys/class/input/event6/device/enable
+    chmod 660 /sys/class/input/event7/device/enable
+    chmod 660 /sys/class/input/event8/device/enable
+    chmod 660 /sys/class/input/event9/device/enable
+    chown input input /sys/class/input/event0/device/poll_delay
+    chown input input /sys/class/input/event1/device/poll_delay
+    chown input input /sys/class/input/event2/device/poll_delay
+    chown input input /sys/class/input/event3/device/poll_delay
+    chown input input /sys/class/input/event4/device/poll_delay
+    chown input input /sys/class/input/event5/device/poll_delay
+    chown input input /sys/class/input/event6/device/poll_delay
+    chown input input /sys/class/input/event7/device/poll_delay
+    chown input input /sys/class/input/event9/device/poll_delay
+    chown input input /sys/class/input/event9/device/poll_delay
+    chmod 660 /sys/class/input/event0/device/poll_delay
+    chmod 660 /sys/class/input/event1/device/poll_delay
+    chmod 660 /sys/class/input/event2/device/poll_delay
+    chmod 660 /sys/class/input/event3/device/poll_delay
+    chmod 660 /sys/class/input/event4/device/poll_delay
+    chmod 660 /sys/class/input/event5/device/poll_delay
+    chmod 660 /sys/class/input/event6/device/poll_delay
+    chmod 660 /sys/class/input/event7/device/poll_delay
+    chmod 660 /sys/class/input/event9/device/poll_delay
+    chmod 660 /sys/class/input/event9/device/poll_delay
+
 # Accelerometer_sensor
     chown system radio /dev/accelerometer
     chown system radio /sys/class/sensors/accelerometer_sensor
@@ -206,8 +255,6 @@ on boot
     chown system radio /sys/class/sensors/proximity_sensor/prox_thresh
     chown system radio /sys/class/sensors/proximity_sensor/barcode_emul_en
 # Light_sensor
-    chown system radio /sys/class/input/input7/enable
-    chown system radio /sys/class/input/input7/poll_delay
     chown system radio /sys/class/sensors/light_sensor/lux
     chown system radio /sys/class/sensors/light_sensor/raw_data
     chown system radio /sys/class/sensors/light_sensor/vendor

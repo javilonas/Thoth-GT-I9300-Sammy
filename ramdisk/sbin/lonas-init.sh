@@ -60,7 +60,6 @@ sync
 /res/ext/optimi_remount.sh
 
 #Fix errores logcat Port 4.4.2
-/res/ext/sysfs_write.sh
 /res/ext/android_ssusbcon.sh
 
 # Iniciar Tweaks Lonas_KL
