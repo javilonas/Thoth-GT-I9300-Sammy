@@ -7,17 +7,37 @@
 
 echo "0" > /proc/sys/vm/swappiness
 echo "3" > /proc/sys/vm/drop_caches
-sleep 1
-echo "0" > /proc/sys/vm/drop_caches
 
 # disable cpuidle log
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
+
+# Miscellaneous tweaks
+echo "524488" > /proc/sys/fs/file-max
+echo "33200" > /proc/sys/fs/inotify/max_queued_events
+echo "584" > /proc/sys/fs/inotify/max_user_instances
+echo "10696" > /proc/sys/fs/inotify/max_user_watches
+echo "0" > /proc/sys/vm/block_dump
+echo "5" > /proc/sys/vm/laptop_mode
+echo "0" > /proc/sys/vm/panic_on_oom 
+echo "8" > /proc/sys/vm/page-cluster
+echo "10" > /proc/sys/fs/lease-break-time
+echo "65836" > /proc/sys/kernel/msgmni
+echo "65836" > /proc/sys/kernel/msgmax
+echo "512 512000 256 2048" > /proc/sys/kernel/sem
+echo "268535656" > /proc/sys/kernel/shmmax
+echo "525488" > /proc/sys/kernel/threads-max
+echo "1" > /proc/sys/vm/oom_kill_allocating_task
+
+# Tweaks internos
+echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
+echo "0" > /proc/sys/kernel/randomize_va_space
+echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask
 
 # Mali GPU uV/OC (Por defecto)
 echo "875000 900000 950000 1025000 1075000" > /sys/class/misc/gpu_control/gpu_voltage_control
 
 # Mali GPU_threshold Ahorro Batería
-echo "72% 64% 92% 87% 92% 87% 92% 87%" > /sys/class/misc/gpu_control/gpu_clock_control
+echo "62% 54% 82% 77% 82% 77% 82% 77%" > /sys/class/misc/gpu_control/gpu_clock_control
 
 # Mali GPU_Control 533 MHz (Por defecto)
 echo "160 266 350 440 533" > /sys/class/misc/gpu_control/gpu_clock_control
@@ -39,8 +59,8 @@ echo "2" > /proc/sys/net/ipv4/tcp_syn_retries
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout
 echo "2" > /proc/sys/net/ipv4/tcp_ecn
-echo "262144" > /proc/sys/net/core/wmem_max
-echo "262144" > /proc/sys/net/core/rmem_max
+echo "524288" > /proc/sys/net/core/wmem_max
+echo "524288" > /proc/sys/net/core/rmem_max
 echo "262144" > /proc/sys/net/core/rmem_default
 echo "262144" > /proc/sys/net/core/wmem_default
 echo "20480" > /proc/sys/net/core/optmem_max
