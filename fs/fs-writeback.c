@@ -969,7 +969,6 @@ void wakeup_flusher_threads(long nr_pages)
 
 	if (!nr_pages)
 		nr_pages = get_nr_dirty_pages();
-	}
 
 	rcu_read_lock();
 	list_for_each_entry_rcu(bdi, &bdi_list, bdi_list) {
