@@ -102,5 +102,15 @@ echo SYNC_WAKEUPS > /sys/kernel/debug/sched_features
 echo HRTICK > /sys/kernel/debug/sched_features
 
 # LMK minfree
-echo "12288,15360,18432,21504,24576,30720" > /sys/module/lowmemorykiller/parameters/minfree
+#
+#     Forground apps    : 12288 pages / 48Mb
+#     Visible apps      : 15360 pages / 60Mb
+#     Secondary server  : 18432 pages / 72Mb
+#     Hidden apps       : 21504 pages / 84Mb
+#     Content providers : 32768 pages / 128Mb
+#     Emtpy apps        : 49152 pages / 192Mb
 
+echo "12288,15360,18432,21504,32768,49152" > /sys/module/lowmemorykiller/parameters/minfree
+
+# Incremento de memoria ram
+/sbin/busybox setprop dalvik.vm.heapsize 192m
