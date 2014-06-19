@@ -1259,7 +1259,7 @@ static struct page *new_slab(struct kmem_cache *s, gfp_t flags, int node)
 	set_freepointer(s, last, NULL);
 
 	page->freelist = start;
-	page->inuse = 0;
+	page->inuse = page->objects;
 	page->frozen = 1;
 out:
 	return page;
@@ -1871,7 +1871,7 @@ debug:
 	if (!alloc_debug_processing(s, page, object, addr))
 		goto another_slab;
 
-	page->inuse++;
+	page->inuse = 1;
 	page->freelist = get_freepointer(s, object);
 	deactivate_slab(s, c);
 	c->node = NUMA_NO_NODE;
