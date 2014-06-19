@@ -181,7 +181,7 @@ typedef struct {
 #define COMPAT_ELF_ET_DYN_BASE	0x0000000070000000UL
 
 extern unsigned long sparc64_elf_hwcap;
-#define ELF_HWCAP	sparc64_elf_hwcap
+#define ELF_HWCAP	sparc64_elf_hwcap()
 
 /* This yields a string that ld.so will use to load implementation
    specific libraries for optimization.  This is more specific in
