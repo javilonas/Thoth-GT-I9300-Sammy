@@ -2062,14 +2062,11 @@ out_unlock:
 slab_empty:
 	if (prior) {
 		/*
-		 * Slab on the partial list.
+		 * Slab still on the partial list.
 		 */
 		remove_partial(s, page);
 		stat(s, FREE_REMOVE_PARTIAL);
-	} else
-		/* Slab must be on the full list */
-		remove_full(s, page);
-
+	}
 	slab_unlock(page);
 	local_irq_restore(flags);
 	stat(s, FREE_SLAB);
