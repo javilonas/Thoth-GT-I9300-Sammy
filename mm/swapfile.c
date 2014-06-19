@@ -1685,7 +1685,7 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
 #else
 	err = try_to_unuse(type);
 #endif
-	test_set_oom_score_adj(oom_score_adj);
+	compare_swap_oom_score_adj(OOM_SCORE_ADJ_MAX, oom_score_adj);
 
 	if (err) {
 		/*
