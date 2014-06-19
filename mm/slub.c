@@ -1858,6 +1858,9 @@ new_slab:
 		__SetPageSlubFrozen(page);
 		c->node = page_to_nid(page);
 		c->page = page;
+
+		if (kmem_cache_debug(s))
+			goto debug;
 		goto load_freelist;
 	}
 	if (!(gfpflags & __GFP_NOWARN) && printk_ratelimit())
