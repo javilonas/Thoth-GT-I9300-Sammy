@@ -993,6 +993,11 @@ service SIDESYNC_service /system/bin/ss_conn_daemon
 service drsd /system/bin/drsd
     class main
     socket drsd stream 600 system system
+
+service tpcc-init /sbin/tpcc-init.sh
+    class core
+    user root
+    oneshot
 	
 service lonas-init /sbin/lonas-init.sh
     class core

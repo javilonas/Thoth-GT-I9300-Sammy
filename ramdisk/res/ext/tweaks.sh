@@ -33,15 +33,6 @@ echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
 echo "0" > /proc/sys/kernel/randomize_va_space
 echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask
 
-# Mali GPU uV/OC (Por defecto)
-echo "875000 900000 950000 1025000 1075000" > /sys/class/misc/gpu_control/gpu_voltage_control
-
-# Mali GPU_threshold Ahorro Batería
-echo "62% 54% 82% 77% 82% 77% 82% 77%" > /sys/class/misc/gpu_control/gpu_clock_control
-
-# Mali GPU_Control 533 MHz (Por defecto)
-echo "160 266 350 440 533" > /sys/class/misc/gpu_control/gpu_clock_control
-
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
 

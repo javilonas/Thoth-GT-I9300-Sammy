@@ -1,0 +1,160 @@
+#!/sbin/busybox sh
+
+XML=$CONFIG_XML
+
+echo "" > $XML
+
+echo '
+<settingsRoot>' >> $XML
+
+echo '
+  <settingsTab name="CPU">
+      <settingsPane description="PegasusQ es el gobernador por defecto para el funcionamiento diario. Desde aquí podrá modificar los diferentes valores que este contiene, ajústelo a su gusto o bien elija otro mas acorde a su uso diario." 
+                  name="Elegir gobernador Activo">' >> $XML
+echo "
+      <spinner description=\"Elegir Governador Activo. Default: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`\" 
+               name=\"Governor Activo\" 
+               action=\"generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor\">" >> $XML
+
+for GOVERNOR in `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors`; do
+  echo "
+        <spinnerItem name=\"$GOVERNOR\" value=\"$GOVERNOR\"/>" >> $XML
+done
+
+echo '
+      </spinner>
+    </settingsPane>
+    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario el equipo puede terminar en un Bucle de reinicios constante o directamente no le arrancará." 
+                  name="CPU control switch">
+      <checkbox description="Si está activado, los ajustes siguientes se aplicarán en el arranque." 
+                name="Establezca la configuración de la CPU en el arranque" 
+                action="controlswitch CPU"
+                label="Establecer en el arranque"/>
+
+    </settingsPane>
+
+    <settingsPane description="CPU scaling" 
+                  name="CPU Control">' >> $XML
+
+echo "
+      <spinner description=\"Establece la frecuencia máxima de la CPU. Por defecto: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq | rev | cut -c 4- | rev` MHz.\" 
+               name=\"CPU max frecuencia\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq\">" >> $XML
+
+  echo "
+      <spinner description=\"Establece la frecuencia mínima de la CPU. Por defecto: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq | rev | cut -c 4- | rev` MHz.\" 
+               name=\"CPU min frecuencia\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq\">" >> $XML
+
+echo '
+    </settingsPane>
+  </settingsTab>
+
+  <settingsTab name="GPU">
+    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario el equipo termina en un Bucle de reinicios o directamente no arrancará. Si se desactiva, los valores mostrados no corresponden a los valores reales actuales, los valores correctos de los perfiles están guardados" 
+                  name="GPU control switch">
+      <checkbox description="Si está activado, los ajustes siguientes se aplicarán en el arranque." 
+                name="Establecer voltajes de la GPU en el arranque" 
+                action="controlswitch GPU" 
+                label="Establecer en el arranque"/>
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Selecciona el Perfil que mejor se adapte a tu terminal\" name=\"GPU threshold\">
+      <spinner description=\"Por Defecto: GPU threshold: Moderado\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
+             <spinnerItem name=\"GPU Threshold: ExtraBattsave\" value=\"0\"/> 
+             <spinnerItem name=\"GPU Threshold: Moderado\" value=\"1\"/> 
+             <spinnerItem name=\"GPU Threshold: Battsave\" value=\"2\"/> 
+             <spinnerItem name=\"GPU Threshold: Normal (Stock)\" value=\"3\"/> 
+             <spinnerItem name=\"GPU Threshold: Semi-Performance\" value=\"4\"/> 
+             <spinnerItem name=\"GPU Threshold: Performance\" value=\"5\"/> 
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo "
+    <settingsPane description=\"Selecciona el Perfil que mejor se adapte a tu terminal\" name=\"GPU mV\">
+      <spinner description=\"Por Defecto: GPU mV: Stock\" name=\"GPU mV\" action=\"gpuvolt gpuvoltpredef\">
+             <spinnerItem name=\"GPU mV: Stock\" value=\"0\"/> 
+             <spinnerItem name=\"GPU mV: -25\" value=\"1\"/> 
+             <spinnerItem name=\"GPU mV: -50\" value=\"2\"/> 
+             <spinnerItem name=\"GPU mV: -75\" value=\"3\"/> 
+             <spinnerItem name=\"GPU mV: -100\" value=\"4\"/> 
+             <spinnerItem name=\"GPU mV: +25\" value=\"5\"/> 
+             <spinnerItem name=\"GPU mV: +50\" value=\"6\"/> 
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo "
+    <settingsPane description=\"Selecciona el Perfil que mejor se adapte a tu terminal\" name=\"GPU freq\">
+      <spinner description=\"Por Defecto: GPU freq: 160/266/350/440/533\" name=\"GPU freq\" action=\"gpufreq gpufreqpredef\">
+             <spinnerItem name=\"GPU freq: 160/266/350/400/440\" value=\"1\"/> 
+             <spinnerItem name=\"GPU freq: 160/266/350/440/533\" value=\"0\"/> 
+             <spinnerItem name=\"GPU freq: 266/350/440/533/640\" value=\"2\"/> 
+             <spinnerItem name=\"GPU freq: 350/440/533/640/666\" value=\"3\"/> 
+             <spinnerItem name=\"GPU freq: 440/533/600/640/700\" value=\"4\"/> 
+             <spinnerItem name=\"GPU freq: 533/600/640/700/733\" value=\"5\"/> 
+             <spinnerItem name=\"GPU freq: 600/640/700/733/750\" value=\"6\"/> 
+             <spinnerItem name=\"GPU freq: 640/700/733/750/800\" value=\"7\"/> 
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
+
+  <settingsTab name="I/O">
+    <settingsPane description="Seeleccione el I/O schedulers que mas se ajuste a sus necesidades, por defecto Lonas_KL usa ROW."  
+                  name="I/O schedulers">' >> $XML
+
+echo "
+      <spinner name=\"Current internal storage scheduler\"
+               action=\"iosched internal /sys/block/mmcblk0/queue/scheduler\">" >> $XML
+
+for IOSCHED in `cat /sys/block/mmcblk0/queue/scheduler | sed -e 's/\]//;s/\[//'`; do
+  echo "
+        <spinnerItem name=\"$IOSCHED\" value=\"$IOSCHED\"/>" >> $XML
+done
+
+echo '
+      </spinner>' >> $XML
+
+echo "
+      <spinner name=\"Current SD card scheduler\"
+               action=\"iosched sd /sys/block/mmcblk1/queue/scheduler\">" >> $XML
+
+for IOSCHED in `cat /sys/block/mmcblk1/queue/scheduler | sed -e 's/\]//;s/\[//'`; do
+  echo "
+        <spinnerItem name=\"$IOSCHED\" value=\"$IOSCHED\"/>" >> $XML
+done
+
+echo '
+      </spinner>
+    </settingsPane>
+
+    <settingsPane name="I/O read-ahead" 
+                  description="Aumentar la velocidad de lectura y escritura.">
+
+      <seekBar  description="El valor de lectura y escritura en la memoria interna del teléfono" 
+                name="Internal storage read-ahead" 
+                action="generictagforce internal /sys/block/mmcblk0/queue/read_ahead_kb"
+                unit="kB" min="128" reversed="false" step="128" max="2048"/>
+
+      <seekBar  description="El valor de lectura y escritura en la memoria externa (SD card)." 
+                name="SD card read-ahead" 
+                action="generictagforce sd /sys/block/mmcblk1/queue/read_ahead_kb"
+                unit="kB" min="128" reversed="false" step="128" max="2048"/>
+
+    </settingsPane>
+
+    <settingsPane name="Dynamic FSync" 
+                  description="fsync() Sirve como un flush/commit en el búfer de escritura al hacer I/O, escribe al almacenamiento. Se almacena una memoria intermedia con datos y escribe periódicamente en el dispositivo de almacenamiento. Desactivando esto ya no hará esto y directamente escribirá los datos.">
+
+      <checkbox description="Dynamic FSync disables file write synchronosity during screen-on, and re-enables it on screen-off." 
+                name="Activar dynamic FSync" 
+                action="generic01 /sys/kernel/dyn_fsync/Dyn_fsync_active"
+                label="Activar dynamic FSync"/>
+
+    </settingsPane>
+  </settingsTab>
+</settingsRoot>' >> $XML
+
+chmod 777 $XML
