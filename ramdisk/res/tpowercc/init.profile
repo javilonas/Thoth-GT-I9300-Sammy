@@ -1,6 +1,6 @@
-# CONFIG TPowerCC
-# Rev 02
 CONFIG_BOOTED=true
+minfree_lkm=12288,15360,18432,21504,32768,49152
+minfree_predef=1
 scaling_governor=pegasusq
 internal_iosched=row
 sd_iosched=row
@@ -16,5 +16,3 @@ gpu_control_uV=875000 900000 950000 1025000 1075000
 gpuvolt_predef=0
 charge_level_usb=900
 chargeusbcurrent_predef=2
-parameters_minfree=12288,15360,18432,21504,32768,49152
-minfree_predef=1
