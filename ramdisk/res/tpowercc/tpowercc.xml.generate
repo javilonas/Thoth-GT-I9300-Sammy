@@ -84,6 +84,30 @@ echo "
 " >> $XML
 echo '
   </settingsTab>
+  <settingsTab name="Cargador">
+    <settingsPane description="Interfaz desde donde podrá seleccionar entre varios perfiles de carga AC/USB, dependiendo del que seleccione, la batería cargará mas lento o mas rápido."  
+                  name="Información">
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 1100mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 1200mA\" name=\"Carga AC\">
+      <spinner description=\"Por Defecto: AC:1100mA\" name=\"Perfil de Carga AC\" action=\"chargeaccurrent chargeaccurrentpredef\">
+             <spinnerItem name=\"AC:1100mA\" value=\"0\"/> 
+             <spinnerItem name=\"AC:1200mA\" value=\"1\"/> 
+             <spinnerItem name=\"AC:1300mA\" value=\"2\"/> 
+      </spinner>
+    </settingsPane>
+    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 475mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 900mA\" name=\"Carga USB\">
+      <spinner description=\"Por Defecto: USB:475mA\" name=\"Perfil de Carga USB\" action=\"chargeusbcurrent chargeusbcurrentpredef\">
+             <spinnerItem name=\"USB:475mA\" value=\"0\"/> 
+             <spinnerItem name=\"USB:700mA\" value=\"1\"/> 
+             <spinnerItem name=\"USB:900mA\" value=\"2\"/> 
+             <spinnerItem name=\"USB:1000mA\" value=\"3\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
 
   <settingsTab name="I/O">
     <settingsPane description="Seleccione el I/O schedulers que mas se ajuste a sus necesidades, por defecto usa ROW."  
