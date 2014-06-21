@@ -24,7 +24,7 @@ done
 echo '
       </spinner>
     </settingsPane>
-    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario el equipo puede terminar en un Bucle de reinicios constante o directamente no le arrancará." 
+    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario puede que el equipo entre en un Bucle de reinicios o directamente no arrancar." 
                   name="CPU control switch">
       <checkbox description="Si está activado, los ajustes siguientes se aplicarán en el arranque." 
                 name="Establezca la configuración de la CPU en el arranque" 
@@ -35,7 +35,7 @@ echo '
 
   </settingsTab>
   <settingsTab name="GPU">
-    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario el equipo termina en un Bucle de reinicios o directamente no arrancará. Si se desactiva, los valores mostrados no corresponden a los valores reales actuales, los valores correctos de los perfiles están guardados" 
+    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario puede que el equipo entre en un Bucle de reinicios o directamente no arrancar." 
                   name="GPU control switch">
       <checkbox description="Si está activado, los ajustes siguientes se aplicarán en el arranque." 
                 name="Establecer voltajes de la GPU en el arranque" 
@@ -87,6 +87,13 @@ echo '
   <settingsTab name="Memoria">
     <settingsPane description="Interfaz desde donde podrá controlar y gestionar la memoria que consume tu terminal mediante uno de los diferentes perfiles, se aconseja Normal, Moderado y Super Moderado para un rendimiento óptimo."  
                   name="Información">
+    </settingsPane>
+    <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario el equipo puede terminar en un Bucle de reinicios o directamente no arrancar." 
+                  name="LMK control switch">
+      <checkbox description="Si está activado, los ajustes siguientes se aplicarán en el arranque." 
+                name="Establecer LMK en el arranque" 
+                action="controlswitch LMK" 
+                label="Establecer en el arranque"/>
     </settingsPane>' >> $XML
 
 echo "
@@ -95,11 +102,11 @@ echo "
              <spinnerItem name=\"LMK: Normal\" value=\"0\"/> 
              <spinnerItem name=\"LMK: Moderado\" value=\"1\"/> 
              <spinnerItem name=\"LMK: Super Moderado\" value=\"2\"/> 
-             <spinnerItem name=\"LMK: Light\" value=\"3\"/>
+             <spinnerItem name=\"LMK: Light\" value=\"3\"/> 
              <spinnerItem name=\"LMK: Super Light\" value=\"4\"/> 
              <spinnerItem name=\"LMK: Medio\" value=\"5\"/> 
-             <spinnerItem name=\"LMK: Agresivo\" value=\"6\"/>
-             <spinnerItem name=\"LMK: Super Agresivo\" value=\"7\"/>
+             <spinnerItem name=\"LMK: Agresivo\" value=\"6\"/> 
+             <spinnerItem name=\"LMK: Super Agresivo\" value=\"7\"/> 
       </spinner>
     </settingsPane>
 " >> $XML

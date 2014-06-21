@@ -3,8 +3,10 @@
 # Script inicio lonas-init.sh
 #
 
+SYSTEM_DEVICE="/dev/block/mmcblk0p9"
+
 # Inicio lonas-init.sh
-/sbin/busybox mount -o remount,rw /system
+/sbin/busybox mount -o remount,rw -t ext4 $SYSTEM_DEVICE /system
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 # Hacer root si no detecta bianrio SU
@@ -47,6 +49,9 @@ sync
 # Iniciar Bootanimation personalizado
 /res/ext/bootanimation.sh
 
+# Limpiador
+/res/ext/limpiador.sh
+
 # Iniciar SQlite
 /res/ext/sqlite.sh
 
@@ -76,9 +81,8 @@ fi;
 # Now wait for the rom to finish booting up
 # (by checking for any android process)
 while ! /sbin/busybox pgrep android.process.acore ; do
-  /sbin/busybox sleep 1
+  /sbin/busybox sleep 2
 done
-  /sbin/busybox sleep 5
 
 # Iniciar efs_backup
 /res/ext/efs_backup.sh
@@ -88,4 +92,4 @@ done
 sync
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
-/sbin/busybox mount -o remount,ro /system
+/sbin/busybox mount -o remount,ro -t ext4 $SYSTEM_DEVICE /system

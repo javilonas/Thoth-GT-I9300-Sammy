@@ -30,11 +30,9 @@ write_values(){
   edit_value minfree_lkm $minfree_lkm
   edit_value minfree_predef $minfree_predef 
 
-  chown 0.0 /sys/module/lowmemorykiller/parameters/minfree
-  chmod 0666 /sys/module/lowmemorykiller/parameters/minfree
-  chmod -R 0666 /sys/module/lowmemorykiller/parameters/minfree
-
+  chmod 777 /sys/module/lowmemorykiller/parameters/minfree
   echo $minfree_lkm > /sys/module/lowmemorykiller/parameters/minfree
+  chmod 0644 /sys/module/lowmemorykiller/parameters/minfree
 }
 
 case "$minfreepredef" in

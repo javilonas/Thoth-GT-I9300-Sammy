@@ -3,9 +3,10 @@
 # Script inicio TPowerCC
 #
 
+SYSTEM_DEVICE="/dev/block/mmcblk0p9"
 
-# Inicio tpcc-init.sh
-/sbin/busybox mount -o remount,rw /system
+# Inicio lonas-init.sh
+/sbin/busybox mount -o remount,rw -t ext4 $SYSTEM_DEVICE /system
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
 if [ ! -f /system/xbin/busybox ]; then
@@ -34,5 +35,5 @@ fi
 /sbin/busybox sync
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
-/sbin/busybox mount -o remount,ro /system
+/sbin/busybox mount -o remount,ro -t ext4 $SYSTEM_DEVICE /system
 

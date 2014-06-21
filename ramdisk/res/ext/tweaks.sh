@@ -20,13 +20,18 @@ echo "0" > /proc/sys/vm/block_dump
 echo "5" > /proc/sys/vm/laptop_mode
 echo "0" > /proc/sys/vm/panic_on_oom 
 echo "8" > /proc/sys/vm/page-cluster
+echo "1" > /proc/sys/vm/overcommit_memory
+echo "0" > /proc/sys/vm/oom_kill_allocating_task
+echo "0" > /proc/sys/vm/dirty_writeback_centisecs=2000
+echo "0" > /proc/sys/vm/dirty_expire_centisecs=1000
 echo "10" > /proc/sys/fs/lease-break-time
 echo "65836" > /proc/sys/kernel/msgmni
 echo "65836" > /proc/sys/kernel/msgmax
+echo "1376" > /proc/sys/random/read_wakeup_threshold
+echo "512" > /proc/sys/random/write_wakeup_threshold
 echo "512 512000 256 2048" > /proc/sys/kernel/sem
 echo "268535656" > /proc/sys/kernel/shmmax
 echo "525488" > /proc/sys/kernel/threads-max
-echo "1" > /proc/sys/vm/oom_kill_allocating_task
 
 # Tweaks internos
 echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
@@ -65,6 +70,23 @@ NET=`ls -d /sys/class/net/*`
 for i in $NET 
 do
 echo "0" > $i/tx_queue_len
+
+done
+
+LOOP=`ls -d /sys/block/loop*`
+RAM=`ls -d /sys/block/ram*`
+MMC=`ls -d /sys/block/mmc*`
+
+for i in $LOOP $RAM $MMC
+do 
+echo "row" > $i/queue/scheduler
+echo "0" > $i/queue/add_random
+echo "0" > $i/queue/rotational
+echo "8192" > $i/queue/nr_requests
+echo "0" > $i/queue/iostats
+echo "1" > $i/queue/iosched/back_seek_penalty
+echo "2" > $i/queue/iosched/slice_idle
+echo "1" > $i/queue/iosched/low_latency
 
 done
 
