@@ -84,6 +84,27 @@ echo "
 " >> $XML
 echo '
   </settingsTab>
+  <settingsTab name="Memoria">
+    <settingsPane description="Interfaz desde donde podrá controlar y gestionar la memoria que consume tu terminal mediante uno de los diferentes perfiles, se aconseja Normal, Moderado y Super Moderado para un rendimiento óptimo."  
+                  name="Información">
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Selecciona el Perfil de memoria que deseas usar\" name=\"LMK LowMemoryKiller\">
+      <spinner description=\"Por Defecto: Moderado\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
+             <spinnerItem name=\"LMK: Normal\" value=\"0\"/> 
+             <spinnerItem name=\"LMK: Moderado\" value=\"1\"/> 
+             <spinnerItem name=\"LMK: Super Moderado\" value=\"2\"/> 
+             <spinnerItem name=\"LMK: Light\" value=\"3\"/>
+             <spinnerItem name=\"LMK: Super Light\" value=\"4\"/> 
+             <spinnerItem name=\"LMK: Medio\" value=\"5\"/> 
+             <spinnerItem name=\"LMK: Agresivo\" value=\"6\"/>
+             <spinnerItem name=\"LMK: Super Agresivo\" value=\"7\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
   <settingsTab name="Cargador">
     <settingsPane description="Interfaz desde donde podrá seleccionar entre varios perfiles de carga AC/USB, dependiendo del que seleccione, la batería cargará mas lento o mas rápido."  
                   name="Información">
