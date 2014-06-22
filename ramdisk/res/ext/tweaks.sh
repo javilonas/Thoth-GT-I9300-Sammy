@@ -22,8 +22,6 @@ echo "0" > /proc/sys/vm/panic_on_oom
 echo "8" > /proc/sys/vm/page-cluster
 echo "1" > /proc/sys/vm/overcommit_memory
 echo "0" > /proc/sys/vm/oom_kill_allocating_task
-echo "2500" > /proc/sys/vm/dirty_writeback_centisecs
-echo "1500" > /proc/sys/vm/dirty_expire_centisecs
 echo "10" > /proc/sys/fs/lease-break-time
 echo "65836" > /proc/sys/kernel/msgmni
 echo "65836" > /proc/sys/kernel/msgmax
