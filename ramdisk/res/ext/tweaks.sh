@@ -12,22 +12,12 @@ echo "3" > /proc/sys/vm/drop_caches
 echo "0" > /sys/module/cpuidle_exynos4/parameters/log_en
 
 # Miscellaneous tweaks
-echo "524488" > /proc/sys/fs/file-max
-echo "33200" > /proc/sys/fs/inotify/max_queued_events
-echo "584" > /proc/sys/fs/inotify/max_user_instances
-echo "10696" > /proc/sys/fs/inotify/max_user_watches
 echo "0" > /proc/sys/vm/block_dump
 echo "5" > /proc/sys/vm/laptop_mode
 echo "0" > /proc/sys/vm/panic_on_oom 
 echo "8" > /proc/sys/vm/page-cluster
-echo "1" > /proc/sys/vm/overcommit_memory
-echo "0" > /proc/sys/vm/oom_kill_allocating_task
-echo "10" > /proc/sys/fs/lease-break-time
-echo "65836" > /proc/sys/kernel/msgmni
-echo "65836" > /proc/sys/kernel/msgmax
-echo "512 512000 256 2048" > /proc/sys/kernel/sem
-echo "268535656" > /proc/sys/kernel/shmmax
-echo "525488" > /proc/sys/kernel/threads-max
+echo "2800" > /proc/sys/vm/dirty_writeback_centisecs
+echo "800" > /proc/sys/vm/dirty_expire_centisecs
 
 # Tweaks internos
 echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
@@ -49,15 +39,17 @@ echo "1" > /proc/sys/net/ipv4/tcp_moderate_rcvbuf
 echo "1" > /proc/sys/net/ipv4/route/flush
 echo "2" > /proc/sys/net/ipv4/tcp_syn_retries
 echo "2" > /proc/sys/net/ipv4/tcp_synack_retries
+echo "5" > /proc/sys/net/ipv4/tcp_keepalive_probes
+echo "10" > /proc/sys/net/ipv4/tcp_keepalive_intvl
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout
 echo "2" > /proc/sys/net/ipv4/tcp_ecn
-echo "524288" > /proc/sys/net/core/wmem_max
-echo "524288" > /proc/sys/net/core/rmem_max
+echo "424288" > /proc/sys/net/core/wmem_max
+echo "424288" > /proc/sys/net/core/rmem_max
 echo "262144" > /proc/sys/net/core/rmem_default
 echo "262144" > /proc/sys/net/core/wmem_default
 echo "20480" > /proc/sys/net/core/optmem_max
-echo "4096 87380 8388608" > /proc/sys/net/ipv4/tcp_wmem
-echo "4096 87380 8388608" > /proc/sys/net/ipv4/tcp_rmem
+echo "4096 87380 524388" > /proc/sys/net/ipv4/tcp_wmem
+echo "4096 87380 524388" > /proc/sys/net/ipv4/tcp_rmem
 echo "4096" > /proc/sys/net/ipv4/udp_rmem_min
 echo "4096" > /proc/sys/net/ipv4/udp_wmem_min
 
