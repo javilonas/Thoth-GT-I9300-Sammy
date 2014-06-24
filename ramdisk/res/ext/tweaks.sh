@@ -85,5 +85,18 @@ echo ARCH_POWER > /sys/kernel/debug/sched_features
 echo SYNC_WAKEUPS > /sys/kernel/debug/sched_features
 echo HRTICK > /sys/kernel/debug/sched_features
 
+# Fix para problemas Con aplicaciones
+/sbin/busybox setprop ro.kernel.android.checkjni 0
+
 # Incremento de memoria ram
+/sbin/busybox setprop dalvik.vm.heapstartsize 6m
+/sbin/busybox setprop dalvik.vm.heapgrowthlimit 48m
 /sbin/busybox setprop dalvik.vm.heapsize 192m
+
+/sbin/busybox setprop ro.HOME_APP_ADJ -17
+
+# Desactivar fast Dormancy
+/sbin/busybox setprop ro.semc.enable.fast_dormancy false
+
+# Tiempo de escaneado wifi (ahorra + batería)
+/sbin/busybox setprop wifi.supplicant_scan_interval 480
