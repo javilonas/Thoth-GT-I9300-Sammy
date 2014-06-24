@@ -91,5 +91,8 @@ done
 
 sync
 
+# Iniciar MTP/adb
+/res/ext/usb_mtp.sh
+
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 /sbin/busybox mount -o remount,ro -t ext4 $SYSTEM_DEVICE /system
