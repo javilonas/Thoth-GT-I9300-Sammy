@@ -5,7 +5,6 @@
 
 # CACHE AUTO CLEAN
 
-echo "0" > /proc/sys/vm/swappiness
 echo "3" > /proc/sys/vm/drop_caches
 
 # disable cpuidle log
@@ -16,8 +15,6 @@ echo "0" > /proc/sys/vm/block_dump
 echo "5" > /proc/sys/vm/laptop_mode
 echo "0" > /proc/sys/vm/panic_on_oom 
 echo "8" > /proc/sys/vm/page-cluster
-echo "2800" > /proc/sys/vm/dirty_writeback_centisecs
-echo "800" > /proc/sys/vm/dirty_expire_centisecs
 
 # Tweaks internos
 echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
