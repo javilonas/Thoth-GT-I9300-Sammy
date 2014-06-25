@@ -27,6 +27,8 @@ on early-fs
 	insmod /lib/modules/vibrator.ko
  
     mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime
+    mount ext4 /dev/block/mmcblk0p12 /data wait nosuid nodev noatime discard,noauto_da_alloc,journal_async_commit
+
 	mkdir /data/log 0777
 
 	chmod 0666 /dev/log/radio
@@ -50,21 +52,20 @@ on boot
 
 service debuggerd /system/bin/debuggerd
 
-	service ueventd /sbin/ueventd
-    	critical
+service ueventd /sbin/ueventd
+    critical
 
-#service console /bin/sh
 service console /system/bin/sh
-	console
+    console
 
 service playlpm /system/bin/playlpm
-    	user root
+    user root
 
 service immvibed /system/bin/immvibed 
-	oneshot
+    oneshot
 
 service lpmkey /system/bin/lpmkey
-    	user root
+    user root
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
@@ -79,4 +80,3 @@ on property:persist.service.adb.enable=1
 
 on property:persist.service.adb.enable=0
     stop adbd
-

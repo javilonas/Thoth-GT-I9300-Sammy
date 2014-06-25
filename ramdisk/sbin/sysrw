@@ -1,3 +1,9 @@
-#!/system/bin/sh
+#!/sbin/busybox sh
+#
+# Script sysrw by javilonas
+#
 
-mount -o remount,rw,noatime,nodiratime -t ext4 /dev/block/mmcblk0p25 /system
+SYSTEM_DEVICE="/dev/block/mmcblk0p9"
+
+/sbin/busybox mount -o remount,rw -t ext4 $SYSTEM_DEVICE /system
+/sbin/busybox mount -t rootfs -o remount,rw rootfs

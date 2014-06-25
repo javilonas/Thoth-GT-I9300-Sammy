@@ -38,6 +38,7 @@ on init
 
     # map "real" external storages paths also in same way. backwards compatibility.
     symlink /storage/extSdCard /mnt/extSdCard
+    symlink /storage/extSdCard /extSdCard
     symlink /storage/UsbDriveA /mnt/UsbDriveA
     symlink /storage/UsbDriveB /mnt/UsbDriveB
     symlink /storage/UsbDriveC /mnt/UsbDriveC
@@ -45,7 +46,7 @@ on init
     symlink /storage/UsbDriveE /mnt/UsbDriveE
     symlink /storage/UsbDriveF /mnt/UsbDriveF
 
-    export SECONDARY_STORAGE /storage/extSdCard
+    export SECONDARY_STORAGE /storage/extSdCard:/storage/UsbDriveA:/storage/UsbDriveB:/storage/UsbDriveC:/storage/UsbDriveD:/storage/UsbDriveE:/storage/UsbDriveF
     
     mkdir /storage/extSdCard 0700 root root
     mkdir /storage/UsbDriveA 0700 root root
@@ -54,8 +55,6 @@ on init
     mkdir /storage/UsbDriveD 0700 root root
     mkdir /storage/UsbDriveE 0700 root root
     mkdir /storage/UsbDriveF 0700 root root
-
-    mkdir /efs 0771 radio system
 
 # To store widevine keybox
     symlink /data/app /factory
@@ -108,10 +107,6 @@ on post-fs-data
     mkdir /data/local 0751 root root
 
     mkdir /data/misc/radio 0775 radio system
-
-    # Waketime for fast dormancy
-    chown system radio /sys/devices/platform/mdm_hsic_pm0/waketime
-    chmod 0660 /sys/devices/platform/mdm_hsic_pm0/waketime
 
  # permissions for bluetooth.
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
@@ -342,14 +337,15 @@ on fs
     setprop ro.crypto.fuse_sdcard true
 
 # for LogMeIn
-    mount ext4 /dev/block/mmcblk0p9 /system rw wait noatime remount
+    exec /sbin/sysrw
 
     chown graphics /system/bin/RescueStarter
     chmod 0755 /system/bin/RescueStarter
     chown graphics /system/bin/RescueServer
     chmod 0755 /system/bin/RescueServer
 
-    mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime remount
+    exec /sbin/sysro
+
 #MDM requirement
     mkdir /data/cp_log
     chmod 0775 /data/cp_log
@@ -782,6 +778,19 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 #    class main
 #    disabled
 #    oneshot
+
+# Secure Storage startup
+service prepare-ssdaemon /system/bin/sh /ss-presetup.sh
+    class core
+    user root
+    group root
+    oneshot
+
+service secure_storage /system/bin/secure_storage_daemon
+    class core
+    user system
+    group system
+    disabled
 
 service ipruleset /system/bin/ipruleset
     class main

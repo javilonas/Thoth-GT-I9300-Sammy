@@ -530,4 +530,6 @@
 /dev/block/mmcblk0p6    u:object_r:m9kefsblk_device:s0
 /dev/block/mmcblk0p7    u:object_r:paramblk_device:s0
 /dev/block/mmcblk0p8    u:object_r:bootblk_device:s0
-/dev/block/mmcblk0p9   u:object_r:recoveryblk_device:s0
+/dev/block/mmcblk0p9    u:object_r:recoveryblk_device:s0
+
+/cache/dalvik-cache(/.*)? u:object_r:dalvikcache_data_file:s0

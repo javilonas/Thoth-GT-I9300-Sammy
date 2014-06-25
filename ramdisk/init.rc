@@ -25,8 +25,11 @@ on early-init
     mkdir /mnt 0775 root system
 
 # Allow system UID to setenforce and set booleans.
+    chown system system /selinux/enforce
     chown system system /sys/fs/selinux/enforce
+    chown -R system system /selinux/booleans
     chown -R system system /sys/fs/selinux/booleans
+    chown system system /selinux/commit_pending_bools
     chown system system /sys/fs/selinux/commit_pending_bools
 
 on init
@@ -54,9 +57,22 @@ on init
     mount cgroup none /acct cpuacct
     mkdir /acct/uid
 
+# Create cgroup mount point for memory
+    mount tmpfs none /sys/fs/cgroup mode=0751,uid=0,gid=1000
+    mkdir /sys/fs/cgroup/memory 0751 root system
+    mount cgroup none /sys/fs/cgroup/memory memory
+    write /sys/fs/cgroup/memory/memory.move_charge_at_immigrate 1
+    chown root system /sys/fs/cgroup/memory/tasks
+    chmod 0661 /sys/fs/cgroup/memory/tasks
+    mkdir /sys/fs/cgroup/memory/sw 0751 root system
+    write /sys/fs/cgroup/memory/sw/memory.swappiness 100
+    write /sys/fs/cgroup/memory/sw/memory.move_charge_at_immigrate 1
+    chown root system /sys/fs/cgroup/memory/sw/tasks
+    chmod 0661 /sys/fs/cgroup/memory/sw/tasks
+
     mkdir /system
     mkdir /data 0771 system system
-    mkdir /cache 0770 system cache
+    mkdir /cache 0771 system cache
     mkdir /config 0500 root root
 
     # See storage config details at http://source.android.com/tech/storage/
@@ -137,7 +153,7 @@ on init
 #   net_bw_stats grants access to other apps' detailed tagged-socket stats.
     chown root net_bw_acct /proc/net/xt_qtaguid/ctrl
     chown root net_bw_stats /proc/net/xt_qtaguid/stats
-	
+
 # Allow everybody to read the xt_qtaguid resource tracking misc dev.
 # This is needed by any process that uses socket tagging.
     chmod 0644 /dev/xt_qtaguid
@@ -164,7 +180,7 @@ on post-fs
 
     # We chown/chmod /cache again so because mount is run as root + defaults
     chown system cache /cache
-    chmod 0770 /cache
+    chmod 0771 /cache
     # We restorecon /cache in case the cache partition has been reset.
     restorecon /cache
 
@@ -210,7 +226,7 @@ on post-fs-data
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
     # storing dumps on platforms which do not have a dedicated dump partition.
-    mkdir /data/dontpanic 0750 root log
+    mkdir /data/dontpanic 0751 root log
 
     # Collect apanic data, free resources and re-arm trigger
     copy /proc/apanic_console /data/dontpanic/apanic_console
@@ -227,21 +243,21 @@ on post-fs-data
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/audit 02775 audit system
     mkdir /data/misc/adb 02750 system shell
-    mkdir /data/misc/bluedroid 0770 bluetooth net_bt_stack
-    mkdir /data/misc/bluetooth 0770 system system
+    mkdir /data/misc/bluedroid 0771 bluetooth net_bt_stack
+    mkdir /data/misc/bluetooth 0771 system system
     mkdir /data/misc/keystore 0700 keystore keystore
     mkdir /data/misc/keychain 0771 system system
-    mkdir /data/misc/radio 0770 system radio
-    mkdir /data/misc/sms 0770 system radio
+    mkdir /data/misc/radio 0771 system radio
+    mkdir /data/misc/sms 0771 system radio
     mkdir /data/misc/zoneinfo 0775 system system
-    mkdir /data/misc/vpn 0770 system vpn
+    mkdir /data/misc/vpn 0771 system vpn
     mkdir /data/misc/systemkeys 0700 system system
     mkdir /data/misc/radio 0775 radio system
     # give system access to wpa_supplicant.conf for backup and restore
-    mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0770 wifi wifi
-    mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
-    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    mkdir /data/misc/wifi 0771 wifi wifi
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    mkdir /data/misc/wifi/wpa_supplicant 0771 wifi wifi
+    mkdir /data/misc/dhcp 0771 dhcp dhcp
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/local 0751 root root
     mkdir /data/misc/media 0700 media media
@@ -261,6 +277,8 @@ on post-fs-data
 
     # create dalvik-cache, so as to enforce our permissions
     mkdir /data/dalvik-cache 0771 system system
+    chown system system /data/dalvik-cache
+    chmod 0771 /data/dalvik-cache
 
     # create resource-cache and double-check the perms
     mkdir /data/resource-cache 0771 system system
@@ -277,9 +295,18 @@ on post-fs-data
 
     # create directory for MediaDrm plug-ins - give drm the read/write access to
     # the following directory.
-    mkdir /data/mediadrm 0770 mediadrm mediadrm
+    mkdir /data/mediadrm 0771 mediadrm mediadrm
 
 # [ SEC_MM_DRM
+
+    # [ save OMA DB, when upgrading from GB to ICS
+    # belows will be removed at KLP
+    mkdir /data/system/databases 0771 system system
+    copy /data/data/com.sec.android.providers.drm/databases/drmdatabase.db /data/system/databases/drmdatabase.db
+    chown system system /data/system/databases/drmdatabase.db
+    chmod 0774 /data/system/databases/drmdatabase.db
+    # ]
+
     # sdrm
     mkdir /efs/drm 0774 drm system
     mkdir /efs/drm/sdrm 0774 drm system
@@ -318,7 +345,7 @@ on post-fs-data
     mkdir /system/lib/drm 0775
     chown root root /system/lib/drm
     chmod 0775 /system/lib/drm
-	
+
     # DivX DRM
     mkdir /efs/.files 0775
     mkdir /efs/.files/.dx1 0775
@@ -330,9 +357,8 @@ on post-fs-data
     chmod 0775 /efs/.files/.dx1
     chmod 0775 /efs/.files/.dm33
     chmod 0775 /efs/.files/.mp301
-    
     restorecon -R /efs
-# ]
+#]
 
     # If there is no fs-post-data action in the init.<device>.rc file, you
     # must uncomment this line, otherwise encrypted filesystems
@@ -345,17 +371,17 @@ on post-fs-data
     chown system mtp /dev/usb_mtp_gadget
 
     # Separate location for storing security policy files on data
-    mkdir /data/security 0700 system system
-    mkdir /data/security/spota 0700 system system
+    mkdir /data/security 0711 system system
+    mkdir /data/security/spota 0711 system system
     mkdir /data/security/booleans 0711 system system
-    mkdir /data/security/good 0700 system system
-    mkdir /data/security/stig 0700 system system
-    mkdir /data/security/mycontainer 0700 system system
+    mkdir /data/security/good 0711 system system
+    mkdir /data/security/stig 0711 system system
+    mkdir /data/security/mycontainer 0711 system system
 
     # Restorecon for backup data file
     mkdir /data/backup 0700 system system
     restorecon /data/backup
-    
+	
 	#Restorecon /tombstones
     restorecon -R /tombstones
 	
@@ -650,24 +676,23 @@ on boot
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,704512,4096,16384,110208
+    setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.lte     524288,1048576,2560000,524288,1048576,2560000
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.hspa    4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hsupa   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hsdpa   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.dchspap 4094,87380,1220608,4096,16384,1220608
+    setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hsupa   4092,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hsdpa   4092,87380,704512,4096,16384,110208
+    setprop net.tcp.buffersize.hspap   4092,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.dchspap 4092,87380,704512,4096,16384,262144
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
     setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
     setprop net.tcp.buffersize.evdo_b  4096,87380,704512,4096,16384,262144
 
-# Assign TCP buffer thresholds to be ceiling value of technology maximums
-# Increased technology maximums should be reflected here.
-    write /proc/sys/net/core/rmem_max  2097152
-    write /proc/sys/net/core/wmem_max  2097152
+# wifi display
+    write /proc/sys/net/core/rmem_max   131071
+    write /proc/sys/net/core/wmem_max   2097152
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
@@ -683,10 +708,12 @@ on boot
 
 # HDCP 2.x
     mkdir /data/system/hdcp2 0775 system system
+
 # h2k permission
     chown radio system /efs/redata.bin
     chmod 0644 /efs/h2k.dat
     mkdir /data/misc/radio/hatp 0775 radio system
+
     class_start core
     class_start main
 
@@ -717,6 +744,7 @@ on property:vold.decrypt=trigger_shutdown_framework
     class_reset main
 
 on property:selinux.reload_policy=1
+
     chown system system /sys/fs/selinux/enforce
     chown -R system system /sys/fs/selinux/booleans
     chown system system /sys/fs/selinux/commit_pending_bools
@@ -753,8 +781,9 @@ service console /system/bin/sh
     class core
     console
     disabled
-    user shell
-    group log
+    user root
+    group root
+
 ## WTL_EDM_START
 ## EDM AuditLog
 service edmaudit /system/bin/edmaudit
@@ -844,7 +873,6 @@ service mobex-daemon /system/bin/npsmobex
     user system
     group system radio inet sdcard_r sdcard_rw media_rw shell
 
-
 service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
@@ -896,6 +924,7 @@ service samsungani /system/sbin/samsungani
 service installd /system/bin/installd
     class main
     socket installd stream 600 system system
+    setprop installd.sdcard_manipulate_done 0
 
 service flash_recovery /system/etc/install-recovery.sh
     class main
