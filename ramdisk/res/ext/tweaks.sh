@@ -16,10 +16,13 @@ echo "5" > /proc/sys/vm/laptop_mode
 echo "0" > /proc/sys/vm/panic_on_oom 
 echo "8" > /proc/sys/vm/page-cluster
 
-# Tweaks internos
-echo "2" > /sys/devices/system/cpu/sched_mc_power_savings
+# Multicore Power Saving (0 = Disable, 1 = Enable, 2 = Enable + more aggressive then 1)
+echo "0" > /sys/devices/system/cpu/sched_mc_power_savings
+
 echo "0" > /proc/sys/kernel/randomize_va_space
-echo "3" > /sys/module/cpuidle_exynos4/parameters/enable_mask
+
+# enable idle+LPA
+echo "2" > /sys/module/cpuidle_exynos4/parameters/enable_mask
 
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr

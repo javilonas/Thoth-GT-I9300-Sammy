@@ -84,6 +84,9 @@ while ! /sbin/busybox pgrep android.process.acore ; do
   /sbin/busybox sleep 2
 done
 
+# kill radio logcat to sdcard
+#/sbin/busybox pkill -f "logcat -b radio -v time";
+
 # Iniciar efs_backup
 /res/ext/efs_backup.sh
 

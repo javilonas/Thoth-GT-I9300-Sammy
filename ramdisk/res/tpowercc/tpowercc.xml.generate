@@ -45,7 +45,7 @@ echo '
 
 echo "
     <settingsPane description=\"Selecciona el Perfil que mejor se adapte a tu terminal\" name=\"GPU threshold\">
-      <spinner description=\"Por Defecto: GPU threshold: Moderado\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
+      <spinner description=\"Por Defecto: GPU threshold: Battsave\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
              <spinnerItem name=\"GPU Threshold: ExtraBattsave\" value=\"0\"/> 
              <spinnerItem name=\"GPU Threshold: Moderado\" value=\"1\"/> 
              <spinnerItem name=\"GPU Threshold: Battsave\" value=\"2\"/> 
@@ -70,7 +70,7 @@ echo "
 " >> $XML
 echo "
     <settingsPane description=\"Selecciona el Perfil que mejor se adapte a tu terminal\" name=\"GPU freq\">
-      <spinner description=\"Por Defecto: GPU freq: 160/266/350/440/533\" name=\"GPU freq\" action=\"gpufreq gpufreqpredef\">
+      <spinner description=\"Por Defecto: GPU freq: 266/350/440/533/640\" name=\"GPU freq\" action=\"gpufreq gpufreqpredef\">
              <spinnerItem name=\"GPU freq: 160/266/350/400/440\" value=\"1\"/> 
              <spinnerItem name=\"GPU freq: 160/266/350/440/533\" value=\"0\"/> 
              <spinnerItem name=\"GPU freq: 266/350/440/533/640\" value=\"2\"/> 
@@ -118,15 +118,15 @@ echo '
     </settingsPane>' >> $XML
 
 echo "
-    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 1100mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 1200mA\" name=\"Carga AC\">
-      <spinner description=\"Por Defecto: AC:1100mA\" name=\"Perfil de Carga AC\" action=\"chargeaccurrent chargeaccurrentpredef\">
+    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 1200mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 1200mA\" name=\"Carga AC\">
+      <spinner description=\"Por Defecto: AC:1200mA\" name=\"Perfil de Carga AC\" action=\"chargeaccurrent chargeaccurrentpredef\">
              <spinnerItem name=\"AC:1100mA\" value=\"0\"/> 
              <spinnerItem name=\"AC:1200mA\" value=\"1\"/> 
              <spinnerItem name=\"AC:1300mA\" value=\"2\"/> 
       </spinner>
     </settingsPane>
-    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 475mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 900mA\" name=\"Carga USB\">
-      <spinner description=\"Por Defecto: USB:475mA\" name=\"Perfil de Carga USB\" action=\"chargeusbcurrent chargeusbcurrentpredef\">
+    <settingsPane description=\"Selecciona el Perfil de carga que desea, por defecto está a 900mA, un perfil mas alto cargará mas rápido la batería, no es recomendable pasar de 900mA\" name=\"Carga USB\">
+      <spinner description=\"Por Defecto: USB:900mA\" name=\"Perfil de Carga USB\" action=\"chargeusbcurrent chargeusbcurrentpredef\">
              <spinnerItem name=\"USB:475mA\" value=\"0\"/> 
              <spinnerItem name=\"USB:700mA\" value=\"1\"/> 
              <spinnerItem name=\"USB:900mA\" value=\"2\"/> 
@@ -184,7 +184,7 @@ echo '
     <settingsPane name="Swappiness" 
                   description="Un valor bajo significa que el kernel va a tratar de evitar el intercambio tanto como sea posible, por contra en un valor más alto intentará de usar el espacio de intercambio de un modo mas agresivo, en resumen: al bajar su valor, le indicamos que use mas caché y menos swap y al subirlo le estamos indicamos al sistema, que use menos Swap y mas caché y memoria RAM. un Valor 0 desactivaría el intercambio de memoria (swap o zram), el tope por norma general es 100, aunque he dejado opción hasta 200.">   
 
-      <seekBar  description="Por defecto: 0 (off)." 
+      <seekBar  description="Por defecto: 30." 
                 name="Virtual machine swappiness" 
                 action="generic /proc/sys/vm/swappiness"
                 unit="%" min="0" reversed="false" step="5" max="200"/>

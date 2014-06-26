@@ -1,44 +1,39 @@
+import init.target.rc
 import init.smdk4x12.usb.rc
 import init.bt.rc
 import init.carrier.rc
 import init.container.rc
 
 on early-init
-    mkdir /efs 0771 radio system
-    mkdir /tombstones
 
 on init
-    # See storage config details at http://source.android.com/tech/storage/
-    mkdir /mnt/media_rw/extSdCard 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveA 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveB 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveC 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveD 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveE 0700 media_rw media_rw
-    mkdir /mnt/media_rw/UsbDriveF 0700 media_rw media_rw
-
-    # Set permissions for persist partition
-    mkdir /persist 0771 system system
-    # See storage config details at http://source.android.com/tech/storage/
+    chmod 0701 /mnt/media_rw
     mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage/emulated 0555 root root
+    mkdir /storage 0775 system sdcard_rw
+    mkdir /storage/emulated 0755 root root
+    mkdir /storage/extSdCard 0775 root root
+    mkdir /mnt/media_rw/extSdCard 0775 system system
+
+    mkdir /storage/UsbDriveA 0775 system system
+    mkdir /storage/UsbDriveB 0775 system system
+    mkdir /storage/UsbDriveC 0775 system system
+    mkdir /storage/UsbDriveD 0775 system system
+    mkdir /storage/UsbDriveE 0775 system system
+    mkdir /storage/UsbDriveF 0775 system system
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
+    export SECONDARY_STORAGE /storage/extSdCard:/storage/UsbDriveA:/storage/UsbDriveB:/storage/UsbDriveC:/storage/UsbDriveD:/storage/UsbDriveE:/storage/UsbDriveF
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
-
-    export SECONDARY_STORAGE /storage/extSdCard
-    mkdir /storage/extSdCard 0555 root root
 
     # Support legacy paths
     symlink /storage/emulated/legacy /sdcard
     symlink /storage/emulated/legacy /mnt/sdcard
     symlink /storage/emulated/legacy /storage/sdcard0
     symlink /mnt/shell/emulated/0 /storage/emulated/legacy
-
-    # map "real" external storages paths also in same way. backwards compatibility.
-    symlink /storage/extSdCard /mnt/extSdCard
     symlink /storage/extSdCard /extSdCard
+    symlink /storage/extSdCard /mnt/extSdCard
+
     symlink /storage/UsbDriveA /mnt/UsbDriveA
     symlink /storage/UsbDriveB /mnt/UsbDriveB
     symlink /storage/UsbDriveC /mnt/UsbDriveC
@@ -46,20 +41,20 @@ on init
     symlink /storage/UsbDriveE /mnt/UsbDriveE
     symlink /storage/UsbDriveF /mnt/UsbDriveF
 
-    export SECONDARY_STORAGE /storage/extSdCard:/storage/UsbDriveA:/storage/UsbDriveB:/storage/UsbDriveC:/storage/UsbDriveD:/storage/UsbDriveE:/storage/UsbDriveF
-    
-    mkdir /storage/extSdCard 0700 root root
-    mkdir /storage/UsbDriveA 0700 root root
-    mkdir /storage/UsbDriveB 0700 root root
-    mkdir /storage/UsbDriveC 0700 root root
-    mkdir /storage/UsbDriveD 0700 root root
-    mkdir /storage/UsbDriveE 0700 root root
-    mkdir /storage/UsbDriveF 0700 root root
+    mkdir /efs 0771 radio system
+    mkdir /tombstones
+    symlink /efs /factory
 
-# To store widevine keybox
-    symlink /data/app /factory
-    
+on fs
     mkdir /preload 0771 system system 
+    mount_all /fstab.smdk4x12
+    setprop ro.crypto.fuse_sdcard true
+
+    # Set permissions for persist partition
+    mkdir /persist 0771 system system
+
+    chown radio system /efs
+    chmod 0771 /efs
 
     # Vibetonz
     export VIBE_PIPE_PATH /dev/pipes
@@ -67,11 +62,11 @@ on init
 
 on post-fs-data
     # we will remap this as /storage/sdcard with the sdcard fuse tool
-    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/media 0775 media_rw media_rw
     chown media_rw media_rw /data/media
 
     # make directory for DRM
-    mkdir /data/app/mcRegistry 0755 root root
+    mkdir /data/app/mcRegistry 0775 root root
 
 # SA, System SW, SAMSUNG create log directory
     mkdir /data/log 0775 system log
@@ -90,6 +85,9 @@ on post-fs-data
 #    mkdir /data/misc/wifi/sockets 0777 wifi wifi
 #    mkdir /data/system 0775 wifi wifi
 #    mkdir /data/system/wpa_supplicant 0777 wifi wifi
+
+    mount_all /fstab.smdk4x12
+    setprop ro.crypto.fuse_sdcard true
 
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0775 wifi system
@@ -162,6 +160,7 @@ on boot
 # WIFI
     setprop wifi.interface wlan0
 
+# make param block device link for SysScope
     symlink /dev/block/mmcblk0p4 /dev/block/param
 
 # <Sensors & NFC>
@@ -276,7 +275,6 @@ on boot
     chown system radio /sys/class/sensors/barometer_sensor/calibration
 # Magnetic_sensor
     chown system radio /dev/akm8975
-    chown system radio /dev/akm8963
     chown system radio /sys/class/sensors/magnetic_sensor/raw_data
     chown system radio /sys/class/sensors/magnetic_sensor/vendor
     chown system radio /sys/class/sensors/magnetic_sensor/name
@@ -328,13 +326,19 @@ on boot
     rm /data/smd_started
     rm /data/sv_cno.info
 
+# fake some battery state
+    setprop status.battery.state Slow
+    setprop status.battery.level 5
+    setprop status.battery.level_raw  50
+    setprop status.battery.level_scale 9
+
+    # Set permission for Widevine DRM temporarily
+    chmod 0777 /dev/s5p-smem
+    rm /data/app/tlcd_sock
+
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
-
-on fs
-    mount_all /fstab.smdk4x12
-    setprop ro.crypto.fuse_sdcard true
 
 # for LogMeIn
     exec /sbin/sysrw
@@ -372,196 +376,18 @@ on fs
     chown system radio /dev/block/platform/dw_mmc/by-name
     chmod 0775 /dev/block/platform/dw_mmc/by-name
 
-# Permissions for DVFS
-    chown radio system /sys/power/cpufreq_table
-    chown radio system /sys/power/cpufreq_max_limit
-    chown radio system /sys/power/cpufreq_min_limit
-    chown radio system /sys/power/gpu_lock
-    chown radio system /sys/devices/system/cpu/busfreq/min_freq
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/cpucore_table
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/min_cpu_lock
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock
-    chmod 0660 /sys/power/cpufreq_table
-    chmod 0660 /sys/power/cpufreq_max_limit
-    chmod 0660 /sys/power/cpufreq_min_limit
-    chmod 0660 /sys/power/gpu_lock
-    chmod 0660 /sys/devices/system/cpu/busfreq/min_freq
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/cpucore_table
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/min_cpu_lock
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock
+on property:ro.uart_debug=0
+	start sec_keyboard
 
-# MTP device permission
-	chmod 0660 /dev/usb_mtp_gadget
-	chown system system /dev/usb_mtp_gadget
-
-# Permissions for Gscaler log level
-    chmod 0666 /sys/module/gsc/parameters/gsc_dbg
-
-# Permissions for backlight
-    chown system system /sys/class/backlight/panel/brightness
-    chown system system /sys/class/backlight/panel/auto_brightness
-    chown system system /sys/class/sec/sec_touchkey/brightness
-
-# Permissions for LCD
-    chown system radio /sys/class/lcd/panel/lcd_type
-    chown system radio /sys/class/lcd/panel/device/hs_toggle
-    chown system system /sys/class/lcd/panel/power_reduce
-    chown system system /sys/class/graphics/fb0/lcdfreq/level
-    chown system system /sys/class/lcd/panel/siop_enable
-
-# Permissions for mDNIe
-    chown system system /sys/class/mdnie/mdnie/mode
-    chown system media_rw /sys/class/mdnie/mdnie/scenario
-    chown system system /sys/class/mdnie/mdnie/accessibility
-    chown system media_rw /sys/class/mdnie/mdnie/outdoor
-
-# OTG_TEST
-    chown system radio /sys/class/host_notify/usb_otg/booster
-    chmod 0660 /sys/class/host_notify/usb_otg/booster
-
-# Switch Device
-    chown system radio /sys/class/sec/switch/otg_test
-    chown system radio /sys/class/sec/switch/adc
-    chown system radio /sys/class/sec/switch/apo_factory
-
-    # copy DRM binary
-    copy /system/app/mcRegistry/00060308060501020000000000000000.tlbin /data/app/mcRegistry/00060308060501020000000000000000.tlbin
-    copy /system/app/FFFFFFFF000000000000000000000001.drbin /data/app/FFFFFFFF000000000000000000000001.drbin
-    copy /system/app/SAMSUNG_EXYNOS4X12_000000000001.kbox /data/app/SAMSUNG_EXYNOS4X12_000000000001.kbox
-    copy /system/app/ecm.dat /data/app/ecm.dat
-    copy /system/app/emm.dat /data/app/emm.dat
-    copy /system/app/wv_test /data/app/wv_test
-
-    chmod 0555 /data/app/FFFFFFFF000000000000000000000001.drbin
-    chmod 0555 /data/app/mcRegistry/00060308060501020000000000000000.tlbin
-	
-# IPC sysfs
-    chown radio radio /sys/devices/virtual/misc/multipdp/waketime
-    symlink /dev/block/mmcblk0p7 /dev/mbin0
-
-on post-fs
-    chown radio system /efs
-    chmod 0771 /efs
-
-on post-fs-data
-
-#QCRIL
-
-    #Create QMUX deamon socket area
-    mkdir /dev/socket/qmux_radio 0770 radio radio
-    chmod 2770 /dev/socket/qmux_radio
-    mkdir /dev/socket/qmux_audio 0770 media audio
-    chmod 2770 /dev/socket/qmux_audio
-
-    # Allow QMUX daemon to assign port open wait time
-    chown radio radio /sys/devices/virtual/hsicctl/hsicctl0/modem_wait
-
-    # To prevent out of order acknowledgements from making
-    # connection tracking to treat them as not belonging to
-    # the connection they belong to.
-    # Otherwise, a weird issue happens in which some long
-    # connections on high-throughput links get dropped when
-    # an ack packet comes out of order
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
-
-# SISO-ANDR_PERF :: START Changing scheduler to cfq and reseting cpu min freq to -1 after boot complete
-#on property:sys.boot_completed=1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor pegasusq
-#    write /sys/block/mmcblk0/queue/scheduler cfq
-#    write /sys/power/cpufreq_min_limit -1
-    write /proc/sys/net/ipv6/conf/rmnet_usb0/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb1/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb2/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb3/accept_ra 2
-# SISO-ANDR_PERF :: END
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/cpucore_table
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/min_cpu_lock
-    chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/cpucore_table
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/min_cpu_lock
-    chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock
-
-
-# umount service
-#service umount_service /system/bin/umount /preload
-#   disabled
-#   oneshot
-
-#on property:persist.sys.storage_preload=1
-#   mount ext4 /dev/block/mmcblk0p10 /preload nosuid nodev noatime wait ro
-#   setprop storage.preload.complete 1
-
-#on property:persist.sys.storage_preload=0
-#    start umount_service
-
-## Daemon processes to be run by init.
-##
-service ueventd /sbin/ueventd
-    class core
-    critical
-
-service console /system/bin/sh
-    class core
-    console
-    disabled
-    group log
-
-on property:ro.debuggable=1
-    start console
-
-# create filesystem if necessary
-service setup_fs /system/bin/setup_fs \
-            /dev/block/mmcblk0p3 \
-            /dev/block/mmcblk0p4
-    class core
-    user root
-    group root
-    oneshot
-
+# create virtual SD card at /mnt/sdcard, based on the /data/media directory
+# daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media will be created with user and group media_rw (1023)
-# virtual sdcard daemon running as media_rw (1023)
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
     class late_start
-    oneshot
 
-service fuse_extSdCard /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/extSdCard /storage/extSdCard
+service fuse_extSdCard /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/extSdCard /storage/extSdCard
     class late_start
     disabled
-    oneshot
-
-service fuse_UsbDriveA /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveA /storage/UsbDriveA
-    class late_start
-    disabled
-    oneshot
-
-service fuse_UsbDriveB /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveB /storage/UsbDriveB
-    class late_start
-    disabled
-    oneshot
-
-service fuse_UsbDriveC /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveC /storage/UsbDriveC
-    class late_start
-    disabled
-    oneshot
-
-service fuse_UsbDriveD /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveD /storage/UsbDriveD
-    class late_start
-    disabled
-    oneshot
-
-service fuse_UsbDriveE /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveE /storage/UsbDriveE
-    class late_start
-    disabled
-    oneshot
-
-service fuse_UsbDriveF /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/UsbDriveF /storage/UsbDriveF
-    class late_start
-    disabled
-    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
@@ -621,12 +447,6 @@ service TvoutService_C /system/bin/bintvoutservice
      group system
 on property:ro.tvout.enable=false
     stop TvoutService_C
-
-service cpboot-daemon /sbin/cbd -d
-    class main
-    user root
-    group radio cache inet misc audio sdcard_rw log sdcard_r
-    seclabel u:r:cbd:s0
 
 # Workaround for broken incall audio
 service bootsnd /sbin/tinyplay /sbin/silence.wav -D 0 -d 0 -p 880
@@ -822,24 +642,3 @@ on property:ro.bootmode=charger
 service playlpm /system/bin/lpm
     class sec-charger
     critical
-
-service DR-daemon /system/bin/ddexe
-    class main
-    user root
-    group system radio inet net_raw
-
-service SMD-daemon /system/bin/smdexe
-    class main
-    user root
-    group system radio inet net_raw
-
-service BCS-daemon /system/bin/connfwexe
-    class main
-    user root
-    group system radio inet net_raw
-	
-#NPSMOBEX
-service mobex-daemon /system/bin/npsmobex
-    class main
-    user system
-    group system radio inet sdcard_r sdcard_rw media_rw shell

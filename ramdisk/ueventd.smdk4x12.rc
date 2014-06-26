@@ -1,8 +1,8 @@
 /dev/mali                 0666   system     system
 /dev/ion                  0666   system     system
 /dev/ump                  0666   system     graphics
-/dev/exynos-mem           0666   system     graphics
-/dev/s3c-mfc              0666   system      graphics
+/dev/exynos-mem           0660   system     camera
+/dev/s3c-mfc              0666   system     graphics
 /dev/s5p-mfc              0666   system     graphics
 /dev/video0               0666   system     camera
 /dev/video1               0666   system     camera
@@ -12,14 +12,14 @@
 /dev/video12              0666   system     system
 /dev/video16              0666   system     system
 /dev/video20              0666   system     system
-/dev/fimg2d               0666   system     graphics
 /dev/i2c-2                0660   system     system
 /dev/i2c-5                0660   system     system
 # HDMI DDC
-/dev/i2c-6                0666   system     system
+/dev/i2c-6                0660   system     system
 /dev/i2c-7                0666   system     system
-/dev/CEC                  0666   system     system
-/dev/HPD                  0666   system     system
+/dev/CEC                  0660   system     system
+/dev/HPD                  0660   system     system
+/dev/fimg2d               0666   system     graphics
 /dev/fmradio              0660   system     audio
 
 # ULP Audio
@@ -27,7 +27,6 @@
 /dev/srp_ctrl             0660   system     audio
 /dev/umts*                0660   system     radio
 /dev/link_pm              0660   system     radio
-/dev/block/mmcblk0p4	  0660	 system	    system
 
 # ipc / modem
 /dev/block/mmcblk0p4      0660   system     radio
@@ -36,7 +35,7 @@
 /dev/block/mmcblk1        0660   root	    system
 /dev/block/mmcblk1p1      0660   root	    system
 /dev/ttyUSB0              0666   system     system
-/dev/ttyUSB1              0666   system     radio
+/dev/ttyUSB1              0666   system     system
 /dev/ttyUSB2              0666   system     system
 /dev/hsic*                0660   system     radio
 /dev/usb/lp*              0660   system     usb
