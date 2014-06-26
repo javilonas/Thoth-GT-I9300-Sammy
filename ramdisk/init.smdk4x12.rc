@@ -14,12 +14,19 @@ on init
     mkdir /storage/extSdCard 0775 root root
     mkdir /mnt/media_rw/extSdCard 0775 system system
 
-    mkdir /storage/UsbDriveA 0775 system system
-    mkdir /storage/UsbDriveB 0775 system system
-    mkdir /storage/UsbDriveC 0775 system system
-    mkdir /storage/UsbDriveD 0775 system system
-    mkdir /storage/UsbDriveE 0775 system system
-    mkdir /storage/UsbDriveF 0775 system system
+    mkdir /storage/UsbDriveA 0775 root root
+    mkdir /storage/UsbDriveB 0775 root root
+    mkdir /storage/UsbDriveC 0775 root root
+    mkdir /storage/UsbDriveD 0775 root root
+    mkdir /storage/UsbDriveE 0775 root root
+    mkdir /storage/UsbDriveF 0775 root root
+
+    mkdir /mnt/media_rw/UsbDriveA 0775 system system
+    mkdir /mnt/media_rw/UsbDriveB 0775 system system
+    mkdir /mnt/media_rw/UsbDriveC 0775 system system
+    mkdir /mnt/media_rw/UsbDriveD 0775 system system
+    mkdir /mnt/media_rw/UsbDriveE 0775 system system
+    mkdir /mnt/media_rw/UsbDriveF 0775 system system
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export SECONDARY_STORAGE /storage/extSdCard:/storage/UsbDriveA:/storage/UsbDriveB:/storage/UsbDriveC:/storage/UsbDriveD:/storage/UsbDriveE:/storage/UsbDriveF
@@ -517,6 +524,30 @@ service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emul
     class late_start
 
 service fuse_extSdCard /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/extSdCard /storage/extSdCard
+    class late_start
+    disabled
+
+service fuse_UsbDriveA /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveA /storage/UsbDriveA
+    class late_start
+    disabled
+
+service fuse_UsbDriveB /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveB /storage/UsbDriveB
+    class late_start
+    disabled
+
+service fuse_UsbDriveC /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveC /storage/UsbDriveC
+    class late_start
+    disabled
+
+service fuse_UsbDriveD /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveD /storage/UsbDriveD
+    class late_start
+    disabled
+
+service fuse_UsbDriveE /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveE /storage/UsbDriveE
+    class late_start
+    disabled
+
+service fuse_UsbDriveF /system/bin/sdcard -u 1023 -g 1023 -w 1023 /mnt/media_rw/UsbDriveF /storage/UsbDriveF
     class late_start
     disabled
 

@@ -12,9 +12,10 @@
 
 # VOLD
 /devices/platform/s3c-sdhci.2/mmc_host/mmc1		/storage/extSdCard      auto        default     voldmanaged=sdcard:auto
-/devices/platform/s5p-ehci/usb1*sda            auto                    vfat    default     voldmanaged=UsbDriveA:auto
-/devices/platform/s5p-ehci/usb1*sdb            auto                    vfat    default     voldmanaged=UsbDriveB:auto
-/devices/platform/s5p-ehci/usb1*sdc            auto                    vfat    default     voldmanaged=UsbDriveC:auto
-/devices/platform/s5p-ehci/usb1*sdd            auto                    vfat    default     voldmanaged=UsbDriveD:auto
-/devices/platform/s5p-ehci/usb1*sde            auto                    vfat    default     voldmanaged=UsbDriveE:auto
-/devices/platform/s5p-ehci/usb1*sdf            auto                    vfat    default     voldmanaged=UsbDriveF:auto
+/devices/platform/s5p-ehci/usb1*sda            /storage/UsbDriveA                    auto    default     voldmanaged=sda:auto
+/devices/platform/s5p-ehci/usb1*sdb            /storage/UsbDriveB                    auto    default     voldmanaged=sdb:auto
+/devices/platform/s5p-ehci/usb1*sdc            /storage/UsbDriveC                    auto    default     voldmanaged=sdc:auto
+/devices/platform/s5p-ehci/usb1*sdd            /storage/UsbDriveD                    auto    default     voldmanaged=sdd:auto
+/devices/platform/s5p-ehci/usb1*sde            /storage/UsbDriveE                    auto    default     voldmanaged=sde:auto
+/devices/platform/s5p-ehci/usb1*sdf            /storage/UsbDriveF                    auto    default     voldmanaged=sdf:auto
+
