@@ -9,6 +9,9 @@ SYSTEM_DEVICE="/dev/block/mmcblk0p9"
 /sbin/busybox mount -o remount,rw -t ext4 $SYSTEM_DEVICE /system
 /sbin/busybox mount -t rootfs -o remount,rw rootfs
 
+/sbin/busybox rm /system/bin/reboot
+/sbin/busybox ln -s /sbin/toolbox /system/bin/reboot
+
 if [ ! -f /system/xbin/busybox ]; then
 /sbin/busybox ln -s /sbin/busybox /system/xbin/busybox
 /sbin/busybox ln -s /sbin/busybox /system/xbin/pkill

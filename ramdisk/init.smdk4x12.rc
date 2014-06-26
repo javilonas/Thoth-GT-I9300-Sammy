@@ -47,7 +47,9 @@ on init
 
 on fs
     mkdir /preload 0771 system system 
+
     mount_all /fstab.smdk4x12
+
     setprop ro.crypto.fuse_sdcard true
 
     # Set permissions for persist partition
@@ -85,9 +87,6 @@ on post-fs-data
 #    mkdir /data/misc/wifi/sockets 0777 wifi wifi
 #    mkdir /data/system 0775 wifi wifi
 #    mkdir /data/system/wpa_supplicant 0777 wifi wifi
-
-    mount_all /fstab.smdk4x12
-    setprop ro.crypto.fuse_sdcard true
 
     # give system access to wpa_supplicant.conf for backup and restore
     mkdir /data/misc/wifi 0775 wifi system

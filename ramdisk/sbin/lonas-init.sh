@@ -58,9 +58,6 @@ sync
 # Iniciar Zipalign
 /res/ext/zipalign.sh
 
-# Hack Reboot
-/res/ext/reboot_hack.sh
-
 # Remontar y Optimizar particiones con EXT4
 /res/ext/optimi_remount.sh
 
@@ -85,7 +82,7 @@ while ! /sbin/busybox pgrep android.process.acore ; do
 done
 
 # kill radio logcat to sdcard
-#/sbin/busybox pkill -f "logcat -b radio -v time";
+/sbin/busybox pkill -f "logcat -b radio -v time";
 
 # Iniciar efs_backup
 /res/ext/efs_backup.sh
