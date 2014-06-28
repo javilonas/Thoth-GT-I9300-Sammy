@@ -97,17 +97,17 @@ static int lowmem_adj[6] = {
 	1,
 	6,
 	12,
-	16,
-	17,
+	13,
+	15,
 };
 static int lowmem_adj_size = 6;
 static size_t lowmem_minfree[6] = {
 	3 * 512,	/* 6MB */
 	2 * 1024,	/* 8MB */
 	4 * 1024,	/* 16MB */
-	5 * 1024,	/* 20MB */
-	8 * 1024,	/* 32MB */
 	16 * 1024,	/* 64MB */
+	20 * 1024,	/* 80MB */
+	28 * 1024,	/* 112MB */
 };
 static int lowmem_minfree_size = 6;
 
