@@ -9,17 +9,17 @@ on early-init
 on init
     chmod 0701 /mnt/media_rw
     mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage 0775 system sdcard_rw
-    mkdir /storage/emulated 0755 root root
-    mkdir /storage/extSdCard 0775 root root
+    mkdir /storage 0550 system sdcard_r
+    mkdir /storage/emulated 0555 root root
+    mkdir /storage/extSdCard 0775 system system
     mkdir /mnt/media_rw/extSdCard 0775 system system
 
-    mkdir /storage/UsbDriveA 0775 root root
-    mkdir /storage/UsbDriveB 0775 root root
-    mkdir /storage/UsbDriveC 0775 root root
-    mkdir /storage/UsbDriveD 0775 root root
-    mkdir /storage/UsbDriveE 0775 root root
-    mkdir /storage/UsbDriveF 0775 root root
+    mkdir /storage/UsbDriveA 0775 system system
+    mkdir /storage/UsbDriveB 0775 system system
+    mkdir /storage/UsbDriveC 0775 system system
+    mkdir /storage/UsbDriveD 0775 system system
+    mkdir /storage/UsbDriveE 0775 system system
+    mkdir /storage/UsbDriveF 0775 system system
 
     mkdir /mnt/media_rw/UsbDriveA 0775 system system
     mkdir /mnt/media_rw/UsbDriveB 0775 system system
