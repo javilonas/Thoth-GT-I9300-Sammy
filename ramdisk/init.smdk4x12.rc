@@ -9,24 +9,24 @@ on early-init
 on init
     chmod 0701 /mnt/media_rw
     mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage 0550 system sdcard_r
-    mkdir /storage/emulated 0555 root root
-    mkdir /storage/extSdCard 0775 system system
-    mkdir /mnt/media_rw/extSdCard 0775 system system
+    mkdir /storage 0775 system system
+    mkdir /storage/emulated 0770 root root
+    mkdir /storage/extSdCard 0770 root root
+    mkdir /mnt/media_rw/extSdCard 0700 media_rw media_rw
 
-    mkdir /storage/UsbDriveA 0775 system system
-    mkdir /storage/UsbDriveB 0775 system system
-    mkdir /storage/UsbDriveC 0775 system system
-    mkdir /storage/UsbDriveD 0775 system system
-    mkdir /storage/UsbDriveE 0775 system system
-    mkdir /storage/UsbDriveF 0775 system system
+    mkdir /storage/UsbDriveA 0770 root root
+    mkdir /storage/UsbDriveB 0770 root root
+    mkdir /storage/UsbDriveC 0770 root root
+    mkdir /storage/UsbDriveD 0770 root root
+    mkdir /storage/UsbDriveE 0770 root root
+    mkdir /storage/UsbDriveF 0770 root root
 
-    mkdir /mnt/media_rw/UsbDriveA 0775 system system
-    mkdir /mnt/media_rw/UsbDriveB 0775 system system
-    mkdir /mnt/media_rw/UsbDriveC 0775 system system
-    mkdir /mnt/media_rw/UsbDriveD 0775 system system
-    mkdir /mnt/media_rw/UsbDriveE 0775 system system
-    mkdir /mnt/media_rw/UsbDriveF 0775 system system
+    mkdir /mnt/media_rw/UsbDriveA 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveB 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveC 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveD 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveE 0700 media_rw media_rw
+    mkdir /mnt/media_rw/UsbDriveF 0700 media_rw media_rw
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export SECONDARY_STORAGE /storage/extSdCard:/storage/UsbDriveA:/storage/UsbDriveB:/storage/UsbDriveC:/storage/UsbDriveD:/storage/UsbDriveE:/storage/UsbDriveF
