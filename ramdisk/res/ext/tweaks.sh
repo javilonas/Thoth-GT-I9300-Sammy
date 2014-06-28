@@ -16,9 +16,6 @@ echo "5" > /proc/sys/vm/laptop_mode
 echo "0" > /proc/sys/vm/panic_on_oom 
 echo "8" > /proc/sys/vm/page-cluster
 
-# Multicore Power Saving (0 = Disable, 1 = Enable, 2 = Enable + more aggressive then 1)
-echo "0" > /sys/devices/system/cpu/sched_mc_power_savings
-
 echo "0" > /proc/sys/kernel/randomize_va_space
 
 # enable idle+LPA
