@@ -1,8 +1,8 @@
 scaling_governor=pegasusq
 internal_iosched=row
 sd_iosched=row
-internal_read_ahead_kb=512
-sd_read_ahead_kb=1024
+internal_read_ahead_kb=256
+sd_read_ahead_kb=512
 min_free_kbytes=8192
 dirty_writeback_centisecs=1500
 dirty_expire_centisecs=300
