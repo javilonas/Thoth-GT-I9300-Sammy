@@ -97,15 +97,19 @@ static int lowmem_adj[6] = {
 	1,
 	6,
 	12,
+	16,
+	17,
 };
 static int lowmem_adj_size = 4;
 static size_t lowmem_minfree[6] = {
 	3 * 512,	/* 6MB */
 	2 * 1024,	/* 8MB */
 	4 * 1024,	/* 16MB */
+	5 * 1024,	/* 20MB */
+	8 * 1024,	/* 32MB */
 	16 * 1024,	/* 64MB */
 };
-static int lowmem_minfree_size = 4;
+static int lowmem_minfree_size = 6;
 
 #ifdef ENHANCED_LMK_ROUTINE
 static struct task_struct *lowmem_deathpending[LOWMEM_DEATHPENDING_DEPTH] = {NULL,};
