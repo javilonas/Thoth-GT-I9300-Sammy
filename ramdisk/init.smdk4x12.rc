@@ -674,14 +674,6 @@ service qc_kickstart /system/bin/qcks s
     user root
     group radio cache inet misc audio sdcard_rw log
 
-service ril-daemon /system/bin/rild
-    class main
-    socket rild stream 660 root radio
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio sdcard_rw log sdcard_r
-    onrestart restart cpboot-daemon
-
 service cpboot-daemon /sbin/cbd -d
     class main
     user root
