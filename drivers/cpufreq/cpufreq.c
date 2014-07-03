@@ -368,8 +368,8 @@ static ssize_t show_##file_name				\
 	return sprintf(buf, "%u\n", policy->object);	\
 }
 
-show_one(cpuinfo_min_freq, cpuinfo.min_freq);
-show_one(cpuinfo_max_freq, cpuinfo.max_freq);
+show_one(cpuinfo_min_freq, min);
+show_one(cpuinfo_max_freq, max);
 show_one(cpuinfo_transition_latency, cpuinfo.transition_latency);
 show_one(scaling_min_freq, min);
 show_one(scaling_max_freq, max);
@@ -608,6 +608,21 @@ static ssize_t show_scaling_setspeed(struct cpufreq_policy *policy, char *buf)
 	return policy->governor->show_setspeed(policy, buf);
 }
 
+extern ssize_t store_TP_mV_table(struct cpufreq_policy *policy,
+				 const char *buf, size_t count);
+
+extern ssize_t store_TP_uV_table(struct cpufreq_policy *policy,
+				 const char *buf, size_t count);
+
+extern ssize_t show_TP_mV_table(struct cpufreq_policy *policy, char *buf);
+
+extern ssize_t show_TP_uV_table(struct cpufreq_policy *policy, char *buf);
+
+/* sysfs interface for ASV level */
+extern ssize_t show_asv_level(struct cpufreq_policy *policy, char *buf);
+extern ssize_t store_asv_level(struct cpufreq_policy *policy,
+                                      const char *buf, size_t count);
+
 /**
  * show_scaling_driver - show the current cpufreq HW/BIOS limitation
  */
@@ -628,6 +643,7 @@ cpufreq_freq_attr_ro(cpuinfo_min_freq);
 cpufreq_freq_attr_ro(cpuinfo_max_freq);
 cpufreq_freq_attr_ro(cpuinfo_transition_latency);
 cpufreq_freq_attr_ro(scaling_available_governors);
+cpufreq_freq_attr_ro(available_freqs);
 cpufreq_freq_attr_ro(scaling_driver);
 cpufreq_freq_attr_ro(scaling_cur_freq);
 cpufreq_freq_attr_ro(bios_limit);
@@ -637,6 +653,9 @@ cpufreq_freq_attr_rw(scaling_min_freq);
 cpufreq_freq_attr_rw(scaling_max_freq);
 cpufreq_freq_attr_rw(scaling_governor);
 cpufreq_freq_attr_rw(scaling_setspeed);
+cpufreq_freq_attr_rw(TP_mV_table);
+cpufreq_freq_attr_rw(TP_uV_table);
+cpufreq_freq_attr_rw(asv_level);
 
 static struct attribute *default_attrs[] = {
 	&cpuinfo_min_freq.attr,
@@ -650,6 +669,9 @@ static struct attribute *default_attrs[] = {
 	&scaling_driver.attr,
 	&scaling_available_governors.attr,
 	&scaling_setspeed.attr,
+	&TP_mV_table.attr,
+	&TP_uV_table.attr,
+	&asv_level.attr,
 	NULL
 };
 
