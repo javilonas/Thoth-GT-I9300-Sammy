@@ -33,6 +33,49 @@ echo '
 
     </settingsPane>
 
+    <settingsPane description="CPU scaling" 
+                  name="CPU voltaje control">' >> $XML
+
+echo "
+      <spinner description=\"Establece la frecuencia máxima de la CPU. Por defecto: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq | rev | cut -c 4- | rev` MHz.\" 
+               name=\"CPU max frecuencia\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq\">" >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+        <spinnerItem name=\"$FREQ MHz\" value=\"${FREQ}000\"/>" >> $XML
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+
+echo "
+      </spinner>
+      <spinner description=\"Establece la frecuencia mínima de la CPU. Por defecto: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq | rev | cut -c 4- | rev` MHz.\" 
+               name=\"CPU min frecuencia\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq\">" >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+        <spinnerItem name=\"$FREQ MHz\" value=\"${FREQ}000\"/>" >> $XML
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+echo '
+      </spinner>
+    </settingsPane>
+
+    <settingsPane description="La disminución de tensión reducirá el consumo de energía de la CPU. El aumento en las frecuencias de overclocking mejora la estabilidad. Demasiado bajo voltaje puede causar inestabilidad y puede quedarse congelado (Colgado)." 
+                  name="CPU voltage control">' >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+      <seekBar  description=\"Voltage por defecto: $UVOLTµV\" 
+	        name=\"${FREQ} MHz step\" 
+                action=\"cpuvolt ${FREQ}\"
+                unit=\"µV\" min=\"600000\" reversed=\"false\" step=\"12500\" max=\"1500000\"/>" >> $XML
+  CPUFREQLIST="$CPUFREQLIST $FREQ"
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+echo '
+    </settingsPane>
   </settingsTab>
   <settingsTab name="GPU">
     <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario puede que el equipo entre en un Bucle de reinicios o directamente no arrancar." 
