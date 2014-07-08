@@ -165,7 +165,7 @@ on init
 
 on post-fs
     # once everything is setup, no need to modify /
-    mount rootfs rootfs / rw remount
+    mount rootfs rootfs / ro remount
 
     # mount shared so changes propagate into child namespaces
     mount rootfs rootfs / shared rec
@@ -230,17 +230,17 @@ on post-fs-data
     # create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/adb 02750 system shell
-    mkdir /data/misc/audit 02750 audit system
+    mkdir /data/misc/audit 02775 audit system
     mkdir /data/misc/bluedroid 0770 bluetooth net_bt_stack
     mkdir /data/misc/bluetooth 0770 system system
     mkdir /data/misc/keystore 0700 keystore keystore
     mkdir /data/misc/keychain 0771 system system
-    mkdir /data/misc/radio 0770 system radio
+    mkdir /data/misc/radio 0775 radio system
+    mkdir /data/misc/radio/hatp 0755 radio system
     mkdir /data/misc/sms 0770 system radio
     mkdir /data/misc/zoneinfo 0775 system system
     mkdir /data/misc/vpn 0770 system vpn
     mkdir /data/misc/systemkeys 0700 system system
-    mkdir /data/misc/radio 0775 radio system
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
     mkdir /data/misc/wifi/wpa_supplicant 0770 wifi wifi
@@ -280,6 +280,7 @@ on post-fs-data
 
     # create the lost+found directories, so as to enforce our permissions
     mkdir /data/lost+found 0770 root root
+    restorecon /data/lost+found
 
     # create directory for DRM plug-ins - give drm the read/write access to
     # the following directory.
@@ -373,6 +374,7 @@ on post-fs-data
     # MTP permission
     chmod 0660 /dev/usb_mtp_gadget
     chown system mtp /dev/usb_mtp_gadget
+	mkdir /dev/socket/mtp 0770 system mtp
 
     # Separate location for storing security policy files on data
     mkdir /data/security 0711 system system
@@ -430,6 +432,10 @@ on boot
     chmod 0666 /sys/module/lowmemorykiller/parameters/adj
     chown root system /sys/module/lowmemorykiller/parameters/minfree
     #chmod 0666 /sys/module/lowmemorykiller/parameters/minfree
+
+# reset_reason
+    chown system system /proc/reset_reason
+    chmod 0600 /proc/reset_reason
 
     # Tweak background writeout
     write /proc/sys/vm/dirty_expire_centisecs 200
@@ -497,14 +503,13 @@ on boot
     chown system system /sys/class/leds/lcd-backlight/brightness
     chown system system /sys/class/leds/button-backlight/brightness
     chown system system /sys/class/leds/jogball-backlight/brightness
+    chown system system /sys/class/leds/red/brightness
     chown system system /sys/class/leds/green/brightness
     chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/red/brightness
     chown system system /sys/class/leds/red/device/grpfreq
     chown system system /sys/class/leds/red/device/grppwm
     chown system system /sys/class/leds/red/device/blink
-
-
+    chown system system /sys/class/timed_output/vibrator/enable
     chown system system /sys/module/sco/parameters/disable_esco
     chown system system /sys/kernel/ipv4/tcp_wmem_min
     chown system system /sys/kernel/ipv4/tcp_wmem_def
@@ -657,21 +662,22 @@ on boot
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2560000,524288,1048576,2560000
+    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
     setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
-    setprop net.tcp.buffersize.hspa    4092,87380,704512,4096,16384,262144
-    setprop net.tcp.buffersize.hsupa   4092,87380,704512,4096,16384,262144
-    setprop net.tcp.buffersize.hsdpa   4092,87380,704512,4096,16384,110208
-    setprop net.tcp.buffersize.hspap   4092,87380,704512,4096,16384,262144
-    setprop net.tcp.buffersize.dchspap 4092,87380,704512,4096,16384,262144
+    setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hsupa   4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hsdpa   4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
     setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
-    setprop net.tcp.buffersize.evdo_b  4096,87380,704512,4096,16384,262144
 
 # wifi display
     write /proc/sys/net/core/rmem_max   131071
     write /proc/sys/net/core/wmem_max   2097152
+
+# Define default initial receive window size in segments.
+    setprop net.tcp.default_init_rwnd 60
 
 # Set this property so surfaceflinger is not started by system_init
     setprop system_init.startsurfaceflinger 0
@@ -691,7 +697,6 @@ on boot
 # h2k permission
     chown radio system /efs/redata.bin
     chmod 0644 /efs/h2k.dat
-    mkdir /data/misc/radio/hatp 0775 radio system
 
     class_start core
     class_start main
@@ -725,9 +730,15 @@ on property:vold.decrypt=trigger_shutdown_framework
 on property:sys.powerctl=*
     powerctl ${sys.powerctl}
 
-# system server cannot write to /proc/sys files, so proxy it through init
+# system server cannot write to /proc/sys files,
+# and chown/chmod does not work for /proc/sys/ entries.
+# So proxy writes through init.
 on property:sys.sysctl.extra_free_kbytes=*
     write /proc/sys/vm/extra_free_kbytes ${sys.sysctl.extra_free_kbytes}
+# "tcp_default_init_rwnd" Is too long!
+on property:sys.sysctl.tcp_def_init_rwnd=*
+    write /proc/sys/net/ipv4/tcp_default_init_rwnd ${sys.sysctl.tcp_def_init_rwnd}
+
 
 ## Daemon processes to be run by init.
 service ueventd /sbin/ueventd
@@ -795,12 +806,13 @@ service servicemanager /system/bin/servicemanager
     onrestart restart media
     onrestart restart surfaceflinger
     onrestart restart drm
-    #onrestart restart sensorhubservice
 
 service vold /system/bin/vold
     class core
     socket vold stream 0660 root mount
     ioprio be 2
+    socket dir_enc_report stream 0660 root mount
+    socket epm stream 0660 system system
 
 service netd /system/bin/netd
     class main
@@ -845,15 +857,13 @@ service ril-daemon /system/bin/rild
     class main
     socket rild stream 660 root radio
     socket rild-debug stream 660 radio system
-    #socket cutback stream 660 media radio
+    socket cutback stream 660 media radio
     user root
-    #group radio cache inet misc audio sdcard_r sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
-    group radio cache inet misc audio sdcard_rw qcom_oncrpc qcom_diag log
-
+    group radio cache inet misc audio sdcard_rw qcom_oncrpc qcom_diag log net_raw diag
 service surfaceflinger /system/bin/surfaceflinger
     class main
     user system
-    group system graphics drmrpc
+    group graphics drmrpc
     onrestart restart zygote
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
@@ -863,19 +873,16 @@ service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-sys
     onrestart write /sys/power/state on
     onrestart restart media
     onrestart restart netd
-    #onrestart restart sensorhubservice
 
 service drm /system/bin/drmserver
     class main
     user drm
-    #group system drm inet drmrpc sdcard_r sdcard_rw media_rw radio shell
     group drm system inet drmrpc
 
 service media /system/bin/mediaserver
     class main
     user media
-    #group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm sdcard_r sdcard_rw media_rw shell graphics lgt_gid
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc qcom_diag mediadrm
+    group system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc sdcard_r sdcard_rw  media_rw shell graphics mediadrm
     ioprio rt 4
 
 service powersnd /system/bin/samsungpowersoundplay
@@ -930,9 +937,8 @@ service mtpd /system/bin/mtpd
 service keystore /system/bin/keystore /data/misc/keystore
     class main
     user keystore
-    group keystore drmrpc system
-    #group keystore drmrpc
-    #socket keystore stream 666
+    group keystore drmrpc
+    socket keystore stream 666
 
 service dumpstate /system/bin/dumpstate -s
     class main

@@ -5,6 +5,8 @@ import init.carrier.rc
 import init.container.rc
 
 on early-init
+    mkdir /efs 0771 radio system
+    mkdir /tombstones
 
 on init
     chmod 0701 /mnt/media_rw
@@ -48,22 +50,21 @@ on init
     symlink /storage/UsbDriveE /mnt/UsbDriveE
     symlink /storage/UsbDriveF /mnt/UsbDriveF
 
-    mkdir /efs 0771 radio system
-    mkdir /tombstones
+    symlink /storage/UsbDriveA /mnt/media_rw/UsbDriveA
+    symlink /storage/UsbDriveB /mnt/media_rw/UsbDriveB
+    symlink /storage/UsbDriveC /mnt/media_rw/UsbDriveC
+    symlink /storage/UsbDriveD /mnt/media_rw/UsbDriveD
+    symlink /storage/UsbDriveE /mnt/media_rw/UsbDriveE
+    symlink /storage/UsbDriveF /mnt/media_rw/UsbDriveF
+
+    export SECONDARY_STORAGE /storage/extSdCard
+
     symlink /efs /factory
 
-on fs
     mkdir /preload 0771 system system 
-
-    mount_all /fstab.smdk4x12
-
-    setprop ro.crypto.fuse_sdcard true
 
     # Set permissions for persist partition
     mkdir /persist 0771 system system
-
-    chown radio system /efs
-    chmod 0771 /efs
 
     # Vibetonz
     export VIBE_PIPE_PATH /dev/pipes
@@ -346,6 +347,10 @@ on boot
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
+	
+on fs
+    mount_all /fstab.smdk4x12
+    setprop ro.crypto.fuse_sdcard true
 
 # for LogMeIn
     exec /sbin/sysrw
@@ -581,6 +586,11 @@ service dhcpcd_p2p /system/bin/dhcpcd -aABKL
     disabled
     oneshot
 
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+	class main
+	disabled
+	oneshot
+
 service iprenew_wlan0 /system/bin/dhcpcd -n
     class main
     disabled
@@ -590,6 +600,11 @@ service iprenew_p2p /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
+
+service iprenew_bt-pan /system/bin/dhcpcd -n
+	class main
+	disabled
+	oneshot
 
 # AT Distributor for factory test
 service at_distributor /system/bin/at_distributor
@@ -728,17 +743,6 @@ service bttestdaemon /system/bin/bttestd
     class main
     user bluetooth
     group bluetooth net_bt_admin
-    disabled
-    oneshot
-
-# bluetooth dhcp config
-service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
-    class main
-    disabled
-    oneshot
-
-service iprenew_bt-pan /system/bin/dhcpcd -n
-    class late_start
     disabled
     oneshot
 

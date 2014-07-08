@@ -136,7 +136,7 @@ typedef struct mali_runtime_resumeTag{
 	unsigned int step;
 }mali_runtime_resume_table;
 
-mali_runtime_resume_table mali_runtime_resume = {266, 900000, 1};
+mali_runtime_resume_table mali_runtime_resume = {266, 875000, 1};
 
 /* dvfs table */
 mali_dvfs_table mali_dvfs[MALI_DVFS_STEPS]={
@@ -541,20 +541,13 @@ void mali_clk_set_rate(unsigned int clk, unsigned int mhz)
 
 	if (mali_clk_get() == MALI_FALSE)
 		return;
-	
+
 	if (bis_vpll)
 	{
-		/* in Pega-prime, vpll_src_clock means ext_xtal_clock!! */
-		clk_set_parent(sclk_vpll_clock, vpll_src_clock);
-
 		clk_set_rate(mali_clock, (clk_get_rate(mali_clock) / 5));
 		clk_set_parent(mali_mout0_clock, mpll_clock);
 		clk_set_parent(mali_clock, mali_mout0_clock);
 		clk_set_rate(mali_clock, 160000000);
-
-		clk_set_rate(fout_vpll_clock, (unsigned int)clk * GPU_MHZ);
-		clk_set_parent(vpll_src_clock, ext_xtal_clock);
-		clk_set_parent(sclk_vpll_clock, fout_vpll_clock);
 
 		clk_set_rate(fout_vpll_clock, (unsigned int)clk * GPU_MHZ);
 		clk_set_parent(mali_parent_clock, sclk_vpll_clock);
