@@ -89,7 +89,7 @@ echo HRTICK > /sys/kernel/debug/sched_features
 /sbin/busybox setprop dalvik.vm.heapstartsize 5m
 /sbin/busybox setprop dalvik.vm.heapgrowthlimit 48m
 /sbin/busybox setprop dalvik.vm.heapsize 192m
-/sbin/busybox setprop dalvik.heaptargetutilization 0.75
+/sbin/busybox setprop dalvik.vm.heaptargetutilization 0.75
 /sbin/busybox setprop dalvik.vm.heapminfree 512k
 /sbin/busybox setprop dalvik.vm.heapmaxfree 2m
 
