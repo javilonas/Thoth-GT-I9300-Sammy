@@ -364,10 +364,10 @@ LINUXINCLUDE    := -I$(srctree)/arch/$(hdr-arch)/include \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -Wno-sizeof-pointer-memaccess \
  		   -fno-strict-aliasing -fno-common -fno-inline \
-  		   -Werror-implicit-function-declaration \
-  		   -Wno-format-security -Wno-array-bounds \
+  		   -Werror-implicit-function-declaration -Wno-maybe-uninitialized \
+  		   -Wno-format-security -Wno-array-bounds -Wno-sequence-point \
   		   -fno-delete-null-pointer-checks -fno-schedule-insns2 -ffast-math \
    		   -mtune=cortex-a9 -march=armv7-a -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp \
   		   -munaligned-access -fno-pic -fno-builtin-memcpy \
