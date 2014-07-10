@@ -1022,7 +1022,7 @@ static unsigned int ip6_default_advmss(const struct dst_entry *dst)
 	 */
 	if (mtu > IPV6_MAXPLEN - sizeof(struct tcphdr))
 		mtu = IPV6_MAXPLEN;
-	return mtu;
+	goto out;
 }
 
 static unsigned int ip6_default_mtu(const struct dst_entry *dst)
@@ -1036,7 +1036,8 @@ static unsigned int ip6_default_mtu(const struct dst_entry *dst)
 		mtu = idev->cnf.mtu6;
 	rcu_read_unlock();
 
-	return mtu;
+out:
+	return min_t(unsigned int, mtu, IP6_MAX_MTU);
 }
 
 static struct dst_entry *icmp6_dst_gc_list;
