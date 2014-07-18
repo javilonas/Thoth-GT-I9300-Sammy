@@ -26,7 +26,7 @@ echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
 
 # TCP tweaks
 echo "1" > /proc/sys/net/ipv4/tcp_low_latency
-echo "1" > /proc/sys/net/ipv4/tcp_timestamps
+echo "0" > /proc/sys/net/ipv4/tcp_timestamps
 echo "1" > /proc/sys/net/ipv4/tcp_tw_reuse
 echo "1" > /proc/sys/net/ipv4/tcp_sack
 echo "1" > /proc/sys/net/ipv4/tcp_dsack
@@ -40,8 +40,8 @@ echo "5" > /proc/sys/net/ipv4/tcp_keepalive_probes
 echo "10" > /proc/sys/net/ipv4/tcp_keepalive_intvl
 echo "10" > /proc/sys/net/ipv4/tcp_fin_timeout
 echo "2" > /proc/sys/net/ipv4/tcp_ecn
-echo "424288" > /proc/sys/net/core/wmem_max
-echo "424288" > /proc/sys/net/core/rmem_max
+echo "524388" > /proc/sys/net/core/wmem_max
+echo "524388" > /proc/sys/net/core/rmem_max
 echo "262144" > /proc/sys/net/core/rmem_default
 echo "262144" > /proc/sys/net/core/wmem_default
 echo "20480" > /proc/sys/net/core/optmem_max
@@ -55,6 +55,26 @@ NET=`ls -d /sys/class/net/*`
 for i in $NET 
 do
 echo "0" > $i/tx_queue_len
+
+done
+
+LOOP=`ls -d /sys/block/loop*`
+RAM=`ls -d /sys/block/ram*`
+MMC=`ls -d /sys/block/mmc*`
+#ZSWA=`ls -d /sys/block/vnswap*`
+
+for j in $LOOP $RAM $MMC #$ZSWA
+do 
+echo "row" > $j/queue/scheduler
+echo "0" > $j/queue/add_random
+echo "0" > $j/queue/rotational
+echo "2048" > $j/queue/read_ahead_kb; 
+echo "8192" > $j/queue/nr_requests
+echo "0" > $j/queue/iostats
+echo "1" > $j/queue/rq_affinity
+echo "1" > $j/queue/iosched/back_seek_penalty
+echo "2" > $j/queue/iosched/slice_idle
+echo "1" > $j/queue/iosched/low_latency
 
 done
 
@@ -100,3 +120,13 @@ echo HRTICK > /sys/kernel/debug/sched_features
 
 # Tiempo de escaneado wifi (ahorra + batería)
 /sbin/busybox setprop wifi.supplicant_scan_interval 480
+
+# Mejorar 3G
+/sbin/busybox setprop ro.ril.hsxpa 2
+/sbin/busybox setprop ro.ril.gprsclass 10
+/sbin/busybox setprop ro.ril.hep 1
+/sbin/busybox setprop ro.ril.enable.dtm 1
+/sbin/busybox setprop ro.ril.hsdpa.category 10
+/sbin/busybox setprop ro.ril.enable.a53 1
+/sbin/busybox setprop ro.ril.enable.3g.prefix 1
+
