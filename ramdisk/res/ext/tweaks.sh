@@ -61,22 +61,14 @@ done
 LOOP=`ls -d /sys/block/loop*`
 RAM=`ls -d /sys/block/ram*`
 MMC=`ls -d /sys/block/mmc*`
-#ZSWA=`ls -d /sys/block/vnswap*`
-
-for j in $LOOP $RAM $MMC #$ZSWA
+for j in $LOOP $RAM $MMC
 do 
-echo "row" > $j/queue/scheduler
-echo "0" > $j/queue/add_random
 echo "0" > $j/queue/rotational
 echo "2048" > $j/queue/read_ahead_kb; 
-echo "8192" > $j/queue/nr_requests
-echo "0" > $j/queue/iostats
-echo "1" > $j/queue/rq_affinity
-echo "1" > $j/queue/iosched/back_seek_penalty
-echo "2" > $j/queue/iosched/slice_idle
-echo "1" > $j/queue/iosched/low_latency
 
 done
+
+echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 
 # Turn off debugging for certain modules
 echo "0" > /sys/module/wakelock/parameters/debug_mask
