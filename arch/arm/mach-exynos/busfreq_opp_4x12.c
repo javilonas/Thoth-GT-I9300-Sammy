@@ -85,23 +85,23 @@ enum busfreq_level_idx {
 static struct busfreq_table *exynos4_busfreq_table;
 
 static struct busfreq_table exynos4_busfreq_table_orig[] = {
-	{LV_0, 400266, 1100000, 0, 0, 0}, /* MIF : 400MHz INT : 200MHz */
-	{LV_1, 400200, 1100000, 0, 0, 0}, /* MIF : 400MHz INT : 200MHz */
-	{LV_2, 267200, 1000000, 0, 0, 0}, /* MIF : 267MHz INT : 200MHz */
-	{LV_3, 267160, 1000000, 0, 0, 0}, /* MIF : 267MHz INT : 160MHz */
-	{LV_4, 160160, 950000, 0, 0, 0},  /* MIF : 160MHz INT : 160MHz */
-	{LV_5, 133133, 950000, 0, 0, 0},  /* MIF : 133MHz INT : 133MHz */
-	{LV_6, 100100, 950000, 0, 0, 0},  /* MIF : 100MHz INT : 100MHz */
+	{LV_0, 400266, 1087500, 0, 0, 0}, /* MIF : 400MHz INT : 200MHz */
+	{LV_1, 400200, 1087500, 0, 0, 0}, /* MIF : 400MHz INT : 200MHz */
+	{LV_2, 267200, 987500, 0, 0, 0},  /* MIF : 267MHz INT : 200MHz */
+	{LV_3, 267160, 987500, 0, 0, 0},  /* MIF : 267MHz INT : 160MHz */
+	{LV_4, 160160, 937500, 0, 0, 0},  /* MIF : 160MHz INT : 160MHz */
+	{LV_5, 133133, 937500, 0, 0, 0},  /* MIF : 133MHz INT : 133MHz */
+	{LV_6, 100100, 937500, 0, 0, 0},  /* MIF : 100MHz INT : 100MHz */
 };
 
 static struct busfreq_table exynos4_busfreq_table_rev2[] = {
-	{LV_0, 440293, 1100000, 0, 0, 0}, /* MIF : 440MHz INT : 220MHz */
-	{LV_1, 440220, 1100000, 0, 0, 0}, /* MIF : 440MHz INT : 220MHz */
-	{LV_2, 293220, 1000000, 0, 0, 0}, /* MIF : 293MHz INT : 220MHz */
-	{LV_3, 293176, 1000000, 0, 0, 0}, /* MIF : 293MHz INT : 176MHz */
-	{LV_4, 176176, 950000, 0, 0, 0},  /* MIF : 176MHz INT : 176MHz */
-	{LV_5, 147147, 950000, 0, 0, 0},  /* MIF : 147MHz INT : 147MHz */
-	{LV_6, 110110, 950000, 0, 0, 0},  /* MIF : 110MHz INT : 110MHz */
+	{LV_0, 440293, 1087500, 0, 0, 0}, /* MIF : 440MHz INT : 220MHz */
+	{LV_1, 440220, 1087500, 0, 0, 0}, /* MIF : 440MHz INT : 220MHz */
+	{LV_2, 293220, 987500, 0, 0, 0},  /* MIF : 293MHz INT : 220MHz */
+	{LV_3, 293176, 987500, 0, 0, 0},  /* MIF : 293MHz INT : 176MHz */
+	{LV_4, 176176, 937500, 0, 0, 0},  /* MIF : 176MHz INT : 176MHz */
+	{LV_5, 147147, 937500, 0, 0, 0},  /* MIF : 147MHz INT : 147MHz */
+	{LV_6, 110110, 937500, 0, 0, 0},  /* MIF : 110MHz INT : 110MHz */
 };
 
 enum busfreq_qos_target {
