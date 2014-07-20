@@ -61,9 +61,6 @@ sync
 # Remontar y Optimizar particiones con EXT4
 /res/ext/optimi_remount.sh
 
-#Fix errores logcat Port 4.4.2
-/res/ext/android_ssusbcon.sh
-
 # Iniciar Tweaks Lonas_KL
 /res/ext/tweaks.sh
 

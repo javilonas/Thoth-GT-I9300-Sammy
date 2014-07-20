@@ -286,21 +286,7 @@ on boot
     chown system radio /sys/class/sensors/magnetic_sensor/raw_data
     chown system radio /sys/class/sensors/magnetic_sensor/vendor
     chown system radio /sys/class/sensors/magnetic_sensor/name
-# SensorHub
-    chown system radio /sys/class/sensors/ssp_sensor/enable
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_rev
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_name
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_test
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_reset
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_update
-    chown system radio /sys/class/sensors/ssp_sensor/mcu_sleep_test
-    chown system radio /sys/class/sensors/ssp_sensor/ori_poll_delay
-    chown system radio /sys/class/sensors/ssp_sensor/mag_poll_delay
 
-# Permissions for Barcode Emul
-    chown system radio /sys/class/sec/sec_barcode_emul/barcode_send
-    chown system radio /sys/class/sec/sec_barcode_emul/barcode_ver_check
-    chown system radio /sys/class/sec/sec_barcode_emul/barcode_led_status
 
 # GPIO DVS
     chown radio system /sys/class/secgpio_check/secgpio_check_all/check_init_detail
@@ -348,27 +334,38 @@ on boot
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
 	
+# SSWAP
+    write /proc/sys/vm/swappiness 130	
+	
 on fs
     mount_all /fstab.smdk4x12
     setprop ro.crypto.fuse_sdcard true
 
 # for LogMeIn
-    exec /sbin/sysrw
+    mount ext4 /dev/block/mmcblk0p9 /system rw wait noatime remount
 
     chown graphics /system/bin/RescueStarter
     chmod 0755 /system/bin/RescueStarter
     chown graphics /system/bin/RescueServer
     chmod 0755 /system/bin/RescueServer
 
-    exec /sbin/sysro
-
+    mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime remount
 #MDM requirement
     mkdir /data/cp_log
     chmod 0775 /data/cp_log
     chown system radio /data/cp_log
 
     mkdir /dev/block/modem
+    symlink /dev/block/platform/dw_mmc/by-name/m9kefs1 /dev/block/modem/m9kefs1
+    symlink /dev/block/platform/dw_mmc/by-name/m9kefs2 /dev/block/modem/m9kefs2
+    symlink /dev/block/platform/dw_mmc/by-name/m9kefs3 /dev/block/modem/m9kefs3
     symlink /dev/block/platform/dw_mmc/by-name/ /dev/block/modem/dump_path
+    chown system radio /dev/block/modem/m9kefs1
+    chmod 0775 /dev/block/modem/m9kefs1
+    chown system radio /dev/block/modem/m9kefs2
+    chmod 0775 /dev/block/modem/m9kefs2
+    chown system radio /dev/block/modem/m9kefs3
+    chmod 0775 /dev/block/modem/m9kefs3
     chown system radio /dev/block/modem/dump_path
     chmod 0775 /dev/block/modem/dump_path
 
@@ -416,6 +413,7 @@ on fs
     chmod 0666 /sys/module/gsc/parameters/gsc_dbg
 
 # Permissions for backlight
+    chmod 0644 /sys/class/backlight/panel/brightness
     chown system system /sys/class/backlight/panel/brightness
     chown system system /sys/class/backlight/panel/auto_brightness
     chown system system /sys/class/sec/sec_touchkey/brightness
@@ -432,6 +430,7 @@ on fs
     chown system media_rw /sys/class/mdnie/mdnie/scenario
     chown system system /sys/class/mdnie/mdnie/accessibility
     chown system media_rw /sys/class/mdnie/mdnie/outdoor
+    chown system system /sys/class/mdnie/mdnie/cabc
 
 # OTG_TEST
     chown system radio /sys/class/host_notify/usb_otg/booster
@@ -586,11 +585,6 @@ service dhcpcd_p2p /system/bin/dhcpcd -aABKL
     disabled
     oneshot
 
-service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
-	class main
-	disabled
-	oneshot
-
 service iprenew_wlan0 /system/bin/dhcpcd -n
     class main
     disabled
@@ -600,17 +594,6 @@ service iprenew_p2p /system/bin/dhcpcd -n
     class main
     disabled
     oneshot
-
-service iprenew_bt-pan /system/bin/dhcpcd -n
-	class main
-	disabled
-	oneshot
-
-# AT Distributor for factory test
-service at_distributor /system/bin/at_distributor
-    class late_start
-    user root
-    group radio log
 
 # diag app for cp uart
 service diag_uart_log /system/bin/diag_uart_log
@@ -696,16 +679,18 @@ service cpboot-daemon /sbin/cbd -d
     group radio cache inet misc audio sdcard_rw log sdcard_r
     seclabel u:r:cbd:s0
 
-#sensorhubservice start
-service sensorhubservice /system/bin/sensorhubservice
+service ril-daemon /system/bin/rild
     class main
-    user system
-    group input
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio sdcard_rw sdcard_r
+    onrestart restart cpboot-daemon
 
 service secril-daemon /system/bin/sec-ril
     class main
     user root
-    group radio cache inet misc audio sdcard_rw diag log sdcard_r
+    group radio cache inet misc audio sdcard_rw diag log
 
 #For EncryptionMode - remove disabled, Modify class main
 service qmiproxy /system/bin/qmiproxy
@@ -746,6 +731,17 @@ service bttestdaemon /system/bin/bttestd
     disabled
     oneshot
 
+# bluetooth dhcp config
+service dhcpcd_bt-pan /system/bin/dhcpcd -ABKL
+    class main
+    disabled
+    oneshot
+
+service iprenew_bt-pan /system/bin/dhcpcd -n
+    class late_start
+    disabled
+    oneshot
+
 # Secure Storage startup
 service prepare-ssdaemon /system/bin/sh /ss-presetup.sh
     class core
@@ -762,7 +758,7 @@ service secure_storage /system/bin/secure_storage_daemon
 service ipruleset /system/bin/ipruleset
     class main
     group vpn net_admin inet net_raw
-    disabled
+	disabled
     oneshot
 
 on property:ro.dumpstate.dmesg=1
@@ -778,7 +774,7 @@ service scranton_RD /system/bin/scranton_RD
 # start for TZPR provisioning version check app
 on property:sys.mobicoredaemon.enable=true
     start scranton_RD
-	
+
 # LPM
 on property:ro.bootmode=charger
     mount ext4 /dev/block/mmcblk0p9 /system wait ro
@@ -789,3 +785,32 @@ on property:ro.bootmode=charger
 service playlpm /system/bin/lpm
     class sec-charger
     critical
+
+service DR-daemon /system/bin/ddexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service SMD-daemon /system/bin/smdexe
+    class main
+    user root
+    group system radio inet net_raw
+
+service BCS-daemon /system/bin/connfwexe
+    class main
+    user root
+    group system radio inet net_raw
+	
+#NPSMOBEX
+service mobex-daemon /system/bin/npsmobex
+    class main
+    user system
+    group system radio inet sdcard_r sdcard_rw media_rw shell
+	
+# SSWAP
+service swapon /sbin/sswap -s
+    class core
+    user root
+    group root
+    seclabel u:r:sswap:s0
+    oneshot
