@@ -36,6 +36,7 @@ on early-init
 #    chown system system /sys/fs/selinux/commit_pending_bools
 
 on init
+    export TERMINFO /system/etc/terminfo
     exec /sbin/ffu -u
     setenforce 0
     setprop ro.boot.selinux 0
