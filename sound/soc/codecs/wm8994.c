@@ -2920,6 +2920,7 @@ static int wm8994_aif3_hw_params(struct snd_pcm_substream *substream,
 		default:
 			return 0;
 		}
+		break;
 	default:
 		return 0;
 	}
@@ -4247,6 +4248,7 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
 #ifdef CONFIG_SND_REM
   Rem_sound_hook_wm8994_pcm_probe(codec);
 #endif
+
         return 0;
 
 err_irq:

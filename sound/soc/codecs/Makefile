@@ -74,6 +74,10 @@ snd-soc-wm8990-objs := wm8990.o
 snd-soc-wm8991-objs := wm8991.o
 snd-soc-wm8993-objs := wm8993.o
 snd-soc-wm8994-objs := wm8994.o wm8994-tables.o wm8958-dsp2.o
+# Rem Sound Engine
+ifdef CONFIG_SND_REM
+snd-soc-wm8994-objs += rem_sound.o
+endif
 snd-soc-wm8995-objs := wm8995.o
 snd-soc-wm9081-objs := wm9081.o
 snd-soc-wm9705-objs := wm9705.o
@@ -181,6 +185,3 @@ obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
 obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
 obj-$(CONFIG_SND_SOC_WM2000)	+= snd-soc-wm2000.o
 obj-$(CONFIG_SND_SOC_WM9090)	+= snd-soc-wm9090.o
-
-# Rem Sound Engine
-obj-$(CONFIG_SND_REM)        += rem_sound.o
