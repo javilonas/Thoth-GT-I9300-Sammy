@@ -175,6 +175,17 @@ echo "
              <spinnerItem name=\"USB:900mA\" value=\"2\"/> 
              <spinnerItem name=\"USB:1000mA\" value=\"3\"/>
       </spinner>
+
+      <checkbox description=\"Para aquellos con problemas de carga inestable, si no te carga a mas de 475mA puedes probar activando esta opción.\" 
+                name=\"Ignorar carga inestable\" 
+                action=\"generic01 /sys/kernel/charge_levels/ignore_unstable_power\"
+                label=\"Activar Ignorar carga inestable\"/>
+
+      <checkbox description=\"Para aquellos con problemas de carga, pueden probar activando también esta opción.\" 
+                name=\"Ignorar márgenes seguros\" 
+                action=\"generic01 /sys/kernel/charge_levels/ignore_safety_margin\"
+                label=\"Activar Ignorar márgenes seguros\"/>
+
     </settingsPane>
 " >> $XML
 echo '
