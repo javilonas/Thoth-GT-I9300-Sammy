@@ -285,6 +285,28 @@ echo '
 
     </settingsPane>
   </settingsTab>
+    <settingsTab name="LED">
+   
+    <settingsPane description="Controlar la forma en que el LED parpadea."
+		  name="Blinking effect">
+
+    <checkbox  description="Ahora podrás activar si deseas el LED frontal con FADE o sin FADE." 
+                name="LED Fading" 
+                action="generic01 /sys/class/sec/led/led_fade"
+                label="Activar LED-Fading"/>
+
+    <seekBar  description="LED Blinking Speed" 
+		name="LED Speed" 
+                action="generic /sys/class/sec/led/led_speed" 
+                unit="" min="0" reversed="false" step="1" max="15"/>
+    
+    <seekBar  description="La intensidad del LED." 
+		name="LED Intensity" 
+		action="generic /sys/class/sec/led/led_intensity" 
+		unit="" min="0" reversed="false" step="1" max="255"/>    
+    
+    </settingsPane>
+  </settingsTab>
 </settingsRoot>' >> $XML
 
 chmod 777 $XML
