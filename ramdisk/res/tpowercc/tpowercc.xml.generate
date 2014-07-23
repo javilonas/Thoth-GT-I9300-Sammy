@@ -141,7 +141,7 @@ echo '
 
 echo "
     <settingsPane description=\"Selecciona el Perfil de memoria que deseas usar\" name=\"LMK LowMemoryKiller\">
-      <spinner description=\"Por Defecto: Moderado\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
+      <spinner description=\"Por Defecto: Super Moderado\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
              <spinnerItem name=\"LMK: Normal\" value=\"0\"/> 
              <spinnerItem name=\"LMK: Moderado\" value=\"1\"/> 
              <spinnerItem name=\"LMK: Super Moderado\" value=\"2\"/> 
