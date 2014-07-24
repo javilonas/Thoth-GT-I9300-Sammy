@@ -28,12 +28,50 @@ if [ ! -f /system/lib/modules ]; then
 /sbin/busybox ln -s /lib/modules/ /system/lib
 fi
 
+# Iniciar zram
+/res/ext/zram.sh
+
+/sbin/busybox sync
+
+/sbin/busybox sleep 5
+
+# Aplicar Fstrim
+/sbin/fstrim -v /data
+/sbin/fstrim -v /cache
+/sbin/fstrim -v /system
+
+/sbin/busybox sync
+
+/sbin/busybox sleep 2
+
+# Fix Permisos
+/sbin/busybox chmod 644 /data/app/*.apk
+/sbin/busybox chown 1000:1000 /data/app/*.apk
+/sbin/busybox chmod 644 /system/app/*.apk
+/sbin/busybox chown 0:0 /system/app/*.apk
+/sbin/busybox chmod 644 /system/framework/*.apk
+/sbin/busybox chown 0:0 /system/framework/*.apk
+/sbin/busybox chmod 644 /system/framework/*.jar
+/sbin/busybox chown 0:0 /system/framework/*.jar
+
+/sbin/busybox sync
+
 # soporte TPowerCC
 /sbin/busybox rm /data/.tpowercc/tpowercc.xml
 /sbin/busybox rm /data/.tpowercc/action.cache
 
+/sbin/busybox mkdir /data/.tpowercc
+/sbin/busybox chmod 777 /data/.tpowercc
+
+. /res/tpowercc/tpowercc-helper
+
+read_defaults
+read_config
+
 /res/init_uci.sh select default
 /res/init_uci.sh apply
+
+apply_config
 
 /sbin/busybox sync
 

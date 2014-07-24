@@ -1,3 +1,4 @@
+swappiness=30
 scaling_governor=pegasusq
 internal_iosched=row
 sd_iosched=row
@@ -6,7 +7,6 @@ sd_read_ahead_kb=512
 min_free_kbytes=8192
 dirty_writeback_centisecs=1500
 dirty_expire_centisecs=300
-swappiness=30
 Dyn_fsync_active=on
 led_fade=on
 led_speed=1

@@ -41,8 +41,6 @@ if [ ! -f /system/xbin/su ] && [ ! -f /system/bin/su ]; then
 
 fi
 
-sync
-
 # Detectar y generar INIT.D
 /res/ext/init_d.sh
 
@@ -89,7 +87,7 @@ done
 
 /sbin/busybox sleep 2
 
-sync
+/sbin/busybox sync
 
 # Iniciar MTP/adb
 /res/ext/usb_mtp.sh

@@ -334,9 +334,6 @@ on boot
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
 	
-# SSWAP
-    write /proc/sys/vm/swappiness 130	
-	
 on fs
     mount_all /fstab.smdk4x12
     setprop ro.crypto.fuse_sdcard true
@@ -806,11 +803,4 @@ service mobex-daemon /system/bin/npsmobex
     class main
     user system
     group system radio inet sdcard_r sdcard_rw media_rw shell
-	
-# SSWAP
-service swapon /sbin/sswap -s
-    class core
-    user root
-    group root
-    seclabel u:r:sswap:s0
-    oneshot
+
