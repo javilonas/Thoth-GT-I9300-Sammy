@@ -1,4 +1,4 @@
-swappiness=30
+swappiness=90
 scaling_governor=pegasusq
 internal_iosched=row
 sd_iosched=row
