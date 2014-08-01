@@ -108,6 +108,10 @@ bool early_boot_irqs_disabled __read_mostly;
 enum system_states system_state __read_mostly;
 EXPORT_SYMBOL(system_state);
 
+#ifdef CONFIG_SAMSUNG_LPM_MODE
+int poweroff_charging;
+#endif /*  CONFIG_SAMSUNG_LPM_MODE */
+
 /*
  * Boot command-line arguments
  */
@@ -391,6 +395,16 @@ static int __init do_early_param(char *param, char *val)
 		}
 	}
 	/* We accept everything at this stage. */
+#ifdef CONFIG_SAMSUNG_LPM_MODE
+  	/*  check power off charging */
+	if ((strncmp(param, "androidboot.mode", 16) == 0) ||
+	    (strncmp(param, "androidboot.bootchg", 19) == 0)) {
+		if ((strncmp(val, "charger", 7) == 0) ||
+		    (strncmp(val, "true", 4) == 0)) {
+  			poweroff_charging = 1;
+		}
+  	}
+#endif
 	return 0;
 }
 
