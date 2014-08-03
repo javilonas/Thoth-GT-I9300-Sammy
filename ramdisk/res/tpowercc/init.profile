@@ -1,4 +1,4 @@
-swappiness=90
+swappiness=30
 led_fade=on
 led_speed=1
 led_intensity=40
