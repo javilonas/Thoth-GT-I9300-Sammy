@@ -20,8 +20,9 @@ if [ -e ramdisk.cpio.gz ]; then
         rm ramdisk.cpio.gz
 fi
 
-# make distclean
-make clean
+make distclean
+make clean && make mrproper
+rm Module.symvers
 
 # clean ccache
 read -t 5 -p "clean ccache, 5sec timeout (y/n)?"
@@ -35,8 +36,14 @@ echo "#################### Eliminando build anterior ####################"
 
 echo "Cleaning latest build"
 make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` mrproper
+make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` clean
 
 find -name '*.ko' -exec rm -rf {} \;
 rm -f $DIR/releasetools/tar/*.tar
 rm -f $DIR/releasetools/zip/*.zip
 rm -rf $DIR/arch/arm/boot/zImage
+rm -f $DIR/arch/arm/boot/*.dtb
+rm -f $DIR/arch/arm/boot/*.cmd
+rm -rf $DIR/arch/arm/boot/Image
+rm $DIR/boot.img
+rm $DIR/zImage
