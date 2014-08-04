@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.06/bin/arm-cortex_a9-linux-gnueabihf-"
+TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.07/bin/arm-cortex_a9-linux-gnueabihf-"
 DIR="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy"
 
 echo "#################### Eliminando Restos ####################"
