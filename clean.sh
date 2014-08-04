@@ -20,7 +20,7 @@ if [ -e ramdisk.cpio.gz ]; then
         rm ramdisk.cpio.gz
 fi
 
-make distclean
+#make distclean
 make clean && make mrproper
 rm Module.symvers
 
