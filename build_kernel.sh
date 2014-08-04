@@ -19,8 +19,8 @@ if [ -e ramdisk.cpio.gz ]; then
         rm ramdisk.cpio.gz
 fi
 
-# make distclean
-make clean
+make distclean
+make clean && make mrproper
 rm Module.symvers
 
 cp arch/arm/configs/lonas_defconfig .config;
@@ -42,7 +42,7 @@ TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-lin
 TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.06/bin"
 ROOTFS_PATH="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy/ramdisk"
 RAMFS_TMP="/home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3"
-export KERNEL_VERSION="Thoth-4.1"
+export KERNEL_VERSION="Thoth-4.2"
 export VERSION_KL="SAMMY"
 export REVISION="RC"
 
@@ -75,6 +75,7 @@ echo "ramfs_tmp = $RAMFS_TMP"
 
 echo "#################### Eliminando build anterior ####################"
 make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` mrproper
+make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` clean
 
 find -name '*.ko' -exec rm -rf {} \;
 rm -rf $KERNELDIR/arch/arm/boot/zImage
