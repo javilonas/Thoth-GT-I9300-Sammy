@@ -34,6 +34,7 @@
 #include <linux/mm.h>
 #include <linux/oom.h>
 #include <linux/sched.h>
+#include <linux/notifier.h>
 
 #ifdef CONFIG_ZSWAP
 #include <linux/fs.h>
@@ -111,11 +112,44 @@ static size_t lowmem_minfree[6] = {
 };
 static int lowmem_minfree_size = 6;
 
+#ifdef ENHANCED_LMK_ROUTINE
+static struct task_struct *lowmem_deathpending[LOWMEM_DEATHPENDING_DEPTH] = {NULL,};
+#else
+static struct task_struct *lowmem_deathpending;
+#endif
+static unsigned long lowmem_deathpending_timeout;
+
 #define lowmem_print(level, x...)			\
 	do {						\
 		if (lowmem_debug_level >= (level))	\
 			printk(x);			\
 	} while (0)
+
+static int
+task_notify_func(struct notifier_block *self, unsigned long val, void *data);
+
+static struct notifier_block task_nb = {
+	.notifier_call	= task_notify_func,
+};
+
+static int
+task_notify_func(struct notifier_block *self, unsigned long val, void *data)
+{
+	struct task_struct *task = data;
+
+#ifdef ENHANCED_LMK_ROUTINE
+	int i = 0;
+	for (i = 0; i < LOWMEM_DEATHPENDING_DEPTH; i++)
+		if (task == lowmem_deathpending[i]) {
+			lowmem_deathpending[i] = NULL;
+		break;
+	}
+#else
+	if (task == lowmem_deathpending)
+		lowmem_deathpending = NULL;
+#endif
+	return NOTIFY_OK;
+}
 
 static bool avoid_to_kill(uid_t uid)
 {
@@ -143,7 +177,7 @@ static bool protected_apps(char *comm)
 	return 0;
 }
 
-static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
+static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 {
 	struct task_struct *p;
 #ifdef ENHANCED_LMK_ROUTINE
@@ -198,18 +232,6 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 	    time_before_eq(jiffies, lowmem_deathpending_timeout))
 		return 0;
 #endif
-
-	/*
-	 * If we already have a death outstanding, then
-	 * bail out right away; indicating to vmscan
-	 * that we have nothing further to offer on
-	 * this pass.
-	 *
-	 * Note: Currently you need CONFIG_PROFILING
-	 * for this to work correctly.
-	 */
-	if (lowmem_deathpending)
-		return 0;
 
 	if (lowmem_adj_size < array_size)
 		array_size = lowmem_adj_size;
@@ -353,15 +375,11 @@ static int lowmem_shrink(int nr_to_scan, gfp_t gfp_mask)
 	}
 #else
 	if (selected) {
-		if (fatal_signal_pending(selected)) {
-			pr_warning("process %d is suffering a slow death\n",
-				   selected->pid);
-			read_unlock(&tasklist_lock);
-			return rem;
-		}
 		lowmem_print(1, "send sigkill to %d (%s), adj %d, size %d\n",
 			     selected->pid, selected->comm,
 			     selected_oom_adj, selected_tasksize);
+		lowmem_deathpending = selected;
+		lowmem_deathpending_timeout = jiffies + HZ;
 		force_sig(SIGKILL, selected);
 		rem -= selected_tasksize;
 #ifdef LMK_COUNT_READ
