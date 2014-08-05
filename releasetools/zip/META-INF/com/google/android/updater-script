@@ -51,7 +51,7 @@ ui_print(" ");
 ui_print(" - Flasheando kernel ");
 ui_print(" ");
 ui_print(" ");
-ui_print(" - Version: [Thoth-4.4");
+ui_print(" - Version: [Thoth-4.4] ");
 ui_print(" ");
 ui_print(" ");
 assert(package_extract_file("boot.img", "/tmp/boot.img"),
