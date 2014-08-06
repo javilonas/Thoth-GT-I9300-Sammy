@@ -50,6 +50,8 @@
 
 #include <asm/unaligned.h>
 
+#include "touchboost_switch.h"
+
 #ifdef CONFIG_MACH_SUPERIOR_KOR_SKT
 #define FW_465GS37
 #endif
@@ -428,10 +430,17 @@ static void set_dvfs_lock(struct mms_ts_info *info, uint32_t on)
 	int ret;
 
 	mutex_lock(&info->dvfs_lock);
-	if (info->cpufreq_level <= 0) {
-		ret = exynos_cpufreq_get_level(800000, &info->cpufreq_level);
-		if (ret < 0)
-			pr_err("[TSP] exynos_cpufreq_get_level error");
+	if (unlikely(info->cpufreq_level <= 0 || info->cpufreq_level != tb_freq_level)) { // Yank : Check if frequency level has changed or hasn't been initialized yet
+		if (unlikely(tb_freq_level == TOUCHBOOST_FREQ_UNDEFINED)) {
+			ret = exynos_cpufreq_get_level(tb_freq, &info->cpufreq_level);    // Yank : Touchboost switch not yet initalized, lookup frequency level here
+			if (ret < 0) {
+				pr_err("[TSP] exynos_cpufreq_get_level error");
+			} else {
+				tb_freq_level = info->cpufreq_level;			  // Yank : Update the prefetched level at this stage
+			}
+		} else {
+			info->cpufreq_level = tb_freq_level;				  // Yank : Touchboost switch is initialized, use the prefetched level
+		}
 		goto out;
 	}
 	if (on == 0) {
@@ -448,7 +457,7 @@ static void set_dvfs_lock(struct mms_ts_info *info, uint32_t on)
 			if (ret < 0) {
 				pr_err("%s: dev lock failed(%d)\n",\
 							__func__, __LINE__);
-}
+			}
 
 			ret = exynos_cpufreq_lock(DVFS_LOCK_ID_TSP,
 							info->cpufreq_level);
@@ -519,8 +528,11 @@ static void release_all_fingers(struct mms_ts_info *info)
 	}
 	input_sync(info->input_dev);
 #if TOUCH_BOOSTER
-	set_dvfs_lock(info, 2);
-	pr_info("[TSP] dvfs_lock free.\n ");
+	if (tb_switch == TOUCHBOOST_ON)
+	{
+		set_dvfs_lock(info, 2);
+		pr_info("[TSP] dvfs_lock free.\n ");
+	}
 #endif
 }
 
@@ -767,7 +779,10 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 	}
 
 #if TOUCH_BOOSTER
-	set_dvfs_lock(info, !!touch_is_pressed);
+	if (tb_switch == TOUCHBOOST_ON)
+	{
+		set_dvfs_lock(info, !!touch_is_pressed);
+	}
 #endif
 out:
 	return IRQ_HANDLED;
@@ -3161,12 +3176,15 @@ static int __devinit mms_ts_probe(struct i2c_client *client,
 	}
 
 #if TOUCH_BOOSTER
-	mutex_init(&info->dvfs_lock);
-	INIT_DELAYED_WORK(&info->work_dvfs_off, set_dvfs_off);
-	INIT_DELAYED_WORK(&info->work_dvfs_chg, change_dvfs_lock);
-	bus_dev = dev_get("exynos-busfreq");
-	info->cpufreq_level = -1;
-	info->dvfs_lock_status = false;
+	if (tb_switch == TOUCHBOOST_ON)
+	{
+		mutex_init(&info->dvfs_lock);
+		INIT_DELAYED_WORK(&info->work_dvfs_off, set_dvfs_off);
+		INIT_DELAYED_WORK(&info->work_dvfs_chg, change_dvfs_lock);
+		bus_dev = dev_get("exynos-busfreq");
+		info->cpufreq_level = -1;
+		info->dvfs_lock_status = false;
+	}
 #endif
 
 #if !defined(CONFIG_MACH_SUPERIOR_KOR_SKT)
