@@ -307,6 +307,303 @@ echo '
     
     </settingsPane>
   </settingsTab>
+
+   <settingsTab name="Pantalla">
+
+     <settingsPane name="Mdnie Hijack" 
+                    description="si este perfil está activo, tiene que desactivar el perfil Sharpen (stock). Los 2 a la vez no se pueden tener activos."> 
+  
+        <checkbox description="Por defecto: Desactivado"
+                  name="Hijack" 
+                  action="generic01 /sys/class/mdnie/mdnie/hijack"
+                  label="Activar Hijack"/>
+  
+     </settingsPane>
+     <settingsPane name="Mdnie Sharpen (stock)" 
+                    description="si este perfil está activo, tiene que desactivar el perfil Hijack. Los 2 a la vez no se pueden tener activos."> 
+  
+        <checkbox description="Por defecto: Activado"
+                  name="Sharpen" 
+                  action="generic01 /sys/class/mdnie/mdnie/sharpen"
+                  label="Activar Sharpen"/>
+  
+     </settingsPane>
+    <settingsPane description="Selecciona el Perfil que mejor se adapte a tu vista" name="MDNIE HIJACK">
+      <spinner description="Por Defecto: Natural" name="MDNIE" action="mdnie mdniepredef">
+             <spinnerItem name="Natural" value="0"/> 
+             <spinnerItem name="Estandard" value="1"/> 
+      </spinner>
+    </settingsPane>
+
+   <settingsPane description="Motor de control de Imagen móvil Digital Natural. El processador de imagen de samsung controla virtualmente cualquier manipulación de imágenes. Todos los interruptores principales de control si se dejan activados, se niega el valor de la secuencia de ajustes de samsung. La secuencia principal tiene SCR y CS activados por defecto."
+                name="Controles Globales">
+
+
+      <checkbox  description="El registro intercepta actos como un gancho y permite la captura de un nuevo escenario y su modificación a través de controles delta. Si un escenario no tiene un ajuste (registro) en su secuencia de base, entonces no puede ser modificado por el gancho."
+                name="Interceptar registro" 
+                action="generic01 /sys/class/misc/mdnie/hook_intercept"
+                label="Habilitar registro gancho"/>
+
+
+      <checkbox  description="La habilitación de la Secuencia Maestra desactivará e ignorará los perfiles y escenarios de Samsung, se desactivarán los controles de la ROM."
+                name="Secuencia Maestra" 
+                action="generic01 /sys/class/misc/mdnie/sequence_intercept"
+                label="Activar secuencia maestra"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="Utiliza mDNIe para evitar el brillo de la retroiluminación y disminuir el resplandor del brillo mediante la reducción de los valores de luminancia de los canales RGB. Esto permite reducir el brillo mínimo mas allá de los valores por defecto."
+                name="Brillo Pantalla Digital">
+
+
+       <seekBar  description="La cantidad de luminancia que se cepilló de los componentes del canal de color."
+                name="Reducción de brillo"
+                action="generic /sys/class/misc/mdnie/brightness_reduction"
+                unit="" min="0" reversed="false" step="1" max="128"/>
+
+
+      <seekBar  description="El conductor contraluz Stock ignora los valores de brillo por debajo de 20 (0-255) y los valores por debajo de ese punto no tienen ningún efecto sobre el brillo. El punto de toma de posesión es el punto de la curva del brillo cuando la reducción del brillo digital toma efecto. La reducción del brillo se pondera linealmente desde el valor configurado completo a cero en el rango de cero brigtness al punto de adquisición. Si el punto de toma de control está más allá de 20, a continuación, tanto de hardware como de reducción de brillo digital se llevan a cabo. Esto puede ayudar con tener una curva de brillo menos brusca causada por la reducción digital."
+                name="Punto de toma de posesión"
+                action="generic /sys/class/misc/mdnie/brightness_takeover_point"
+                unit="" min="0" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Delta positiva que se aplica sobre el brillo del sistema. Sólo se utiliza para la lógica de reducción digital durante la activación del brillo automático de la ROM stock, se puede utilizar para iluminar de nuevo el valor de reducción al cambiar el valor de brillo interpretado sin sacrificar el brillo mínimo en el modo manual."
+                name="Entrada Delta de brillo automático"
+                action="generic /sys/class/misc/mdnie/brightness_input_delta"
+                unit="" min="0" reversed="false" step="1" max="64"/>
+
+    </settingsPane>
+
+    <settingsPane description="Trabaja exclusivamente en el reproductor de vídeo stock."
+                name="Control DNR y HDR">
+
+      <checkbox  description="" 
+                name="Alternador de reducción del Ruido Digital"
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_digital_noise_reduction"
+                label="Reducción de ruido digital para la reproducción de vídeo"/>
+
+      <checkbox  description="" 
+                name="Alternador de alto rango dinámico"
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_high_dynamic_range"
+                label="Alternador HDR para reproducción de vídeo"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+                name="Control realce del borde digital">
+
+      <checkbox  description="" 
+                name="El interruptor maestro mejora el margen digital de la interfaz de usuario" 
+                action="maskvalue 1 /sys/class/misc/mdnie/hook_control/s_edge_enhancement"
+                label="Interruptor para mejorar los bordes para la interfaz de usuario"/>
+
+      <checkbox  description="" 
+                name="Interruptor general realza los bordes del vídeo Digital" 
+                action="maskvalue 2 /sys/class/misc/mdnie/hook_control/s_edge_enhancement"
+                label="Toggle realce de bordes para la reproducción de vídeo"/>
+
+      <seekBar  description=""
+                name="Amount"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_e"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+      <seekBar  description=""
+                name="Radius"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_f"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+      <seekBar  description=""
+                name="Threshold"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_f"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="Saturación Chroma trabaja en el espacio de color HSL, modificando la saturación va a diluir el color con el blanco u oscurecer con negro. Las variaciones en el chroma se logran mediante la adición de diferentes cantidades de un gris neutro del mismo valor que el color que desea modificar."
+                name="Control de saturación Chroma">
+
+
+      <checkbox  description="Los ajustes de fábrica anulan los controles." 
+                name="Configuración de fábrica saturación Chroma" 
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_factory_chroma_saturation"
+                label="interruptor de Configuración de fábrica"/>
+
+      <seekBar  description="Saturación peso / multiplicadores para RGB/YCM aumento chroma"
+                name="Peso saturación Chroma"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_weight"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de rojo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_red"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de verde"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_green"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de azul"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_blue"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de amarillo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_yellow"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de Cian"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_cyan"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Aumento de Magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_magenta"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+
+    <settingsPane description="Los cambios de temperatura de color blanco"
+                name="Blanco - Control temperatura de color">
+
+      <checkbox  description="" 
+                name="Interruptor principal Temperatura de color" 
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_MCM"
+                label="Interruptor del Control de la temperatura de color"/>
+
+
+      <seekBar  description="El punto de partida es 6500K."
+                name="Temperatura de color"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/mcm_temperature"
+                unit="00K" min="-20" reversed="false" step="1" max="20"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="Los controles se dividen en 8 canales, RGB, YCM, W y K. controles SCR son modificadores RGB en cada uno de los controles que alteran las luminosidades primarias en ese canal."
+                name="Balance de color Blanco">
+
+      <seekBar  description="Rojo en blanco"
+                name="Rojo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_red"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+      <seekBar  description="Verde en blanco"
+                name="Verde"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_green"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+      <seekBar  description="Azul en blanco"
+                name="Azul"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_blue"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+                name="Primarios (RGB) canales de color">
+
+      <seekBar  description="Rojo en canal rojo"
+                name="Rojo en rojo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Verde en canal rojo"
+                name="Verde en rojo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Azul en canal rojo"
+                name="Azul en rojo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Rojo en canal verde"
+                name="Rojo en verde"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Verde en canal verde"
+                name="Verde en verde"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Azul en canal verde"
+                name="Azul en verde"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Rojo en canal azul"
+                name="Rojo en azul"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Verde en canal azul"
+                name="Verde en azul"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Azul en canal azul"
+                name="Azul en azul"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+                name="Secundarios (YCM) canales de color">
+
+      <seekBar  description="Rojo en canal amarillo"
+                name="Rojo en amarillo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Verde en canal amarillo"
+                name="Verde en amarillo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Azul en canal amarillo"
+                name="Azul en amarillo"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Rojo en canal Cyan"
+                name="Rojo en cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Verde en canal Cyan"
+                name="Verde en cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Azul en canal Cyan"
+                name="Azul en cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Rojo en canal magenta"
+                name="Rojo en magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Verde en canal magenta"
+                name="Verde en magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Azul en canal magenta"
+                name="Azul en magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+  </settingsTab>
 </settingsRoot>' >> $XML
 
 chmod 777 $XML

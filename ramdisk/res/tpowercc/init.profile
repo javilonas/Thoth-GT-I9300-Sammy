@@ -1,4 +1,6 @@
 swappiness=90
+hijack=off
+sharpen=on
 led_fade=on
 led_speed=1
 led_intensity=40
