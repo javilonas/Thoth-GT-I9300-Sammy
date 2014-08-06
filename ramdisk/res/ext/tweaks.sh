@@ -18,9 +18,6 @@ echo "8" > /proc/sys/vm/page-cluster
 
 echo "0" > /proc/sys/kernel/randomize_va_space
 
-# enable idle+LPA
-echo "2" > /sys/module/cpuidle_exynos4/parameters/enable_mask
-
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
 
@@ -45,10 +42,10 @@ echo "524388" > /proc/sys/net/core/rmem_max
 echo "262144" > /proc/sys/net/core/rmem_default
 echo "262144" > /proc/sys/net/core/wmem_default
 echo "20480" > /proc/sys/net/core/optmem_max
-echo "4096 87380 524388" > /proc/sys/net/ipv4/tcp_wmem
-echo "4096 87380 524388" > /proc/sys/net/ipv4/tcp_rmem
-echo "4096" > /proc/sys/net/ipv4/udp_rmem_min
-echo "4096" > /proc/sys/net/ipv4/udp_wmem_min
+echo "6144 87380 524388" > /proc/sys/net/ipv4/tcp_wmem
+echo "6144 87380 524388" > /proc/sys/net/ipv4/tcp_rmem
+echo "6144" > /proc/sys/net/ipv4/udp_rmem_min
+echo "6144" > /proc/sys/net/ipv4/udp_wmem_min
 
 # reduce txqueuelen to 0 to switch from a packet queue to a byte one
 NET=`ls -d /sys/class/net/*`

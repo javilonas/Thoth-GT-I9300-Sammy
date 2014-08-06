@@ -22,6 +22,14 @@ for GOVERNOR in `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_gove
 done
 
 echo '
+      </spinner>' >> $XML
+  echo "
+<spinner description=\"Por Defecto: Idle + LPA\" name=\"CPU Idle (ajustes de potencia)\" action=\"enable_mask enable_maskpredef\">
+             <spinnerItem name=\"Idle\" value=\"0\"/> 
+             <spinnerItem name=\"AFTR\" value=\"1\"/> 
+             <spinnerItem name=\"Idle + LPA\" value=\"2\"/> 
+             <spinnerItem name=\"AFTR + LPA\" value=\"3\"/>" >> $XML
+echo '
       </spinner>
     </settingsPane>
     <settingsPane description="Aplicar la configuración de arranque sólo si la que desea llega a ser estable, de lo contrario puede que el equipo entre en un Bucle de reinicios o directamente no arrancar." 
