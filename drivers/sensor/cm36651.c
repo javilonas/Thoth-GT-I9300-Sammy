@@ -33,6 +33,10 @@
 #include <linux/sensor/cm36651.h>
 #include <linux/sensor/sensors_core.h>
 
+#ifdef CONFIG_TOUCH_WAKE
+#include <linux/touch_wake.h>
+#endif
+
 /* For debugging */
 #undef	CM36651_DEBUG
 
@@ -478,6 +482,14 @@ static ssize_t proximity_enable_store(struct device *dev,
 		pr_err("%s: invalid value %d\n", __func__, *buf);
 		return -EINVAL;
 	}
+	
+	#ifdef CONFIG_TOUCH_WAKE
+		if (new_value) { // true if proximity detected
+			proximity_detected();
+		} else {
+			proximity_off();
+		}
+	#endif
 
 	mutex_lock(&cm36651->power_lock);
 	pr_info("%s, new_value = %d, threshold = %d\n", __func__, new_value,
@@ -591,6 +603,7 @@ static ssize_t proximity_avg_store(struct device *dev,
 
 	pr_info("%s, average enable = %d\n", __func__, new_value);
 	mutex_lock(&cm36651->power_lock);
+
 	if (new_value) {
 		if (!(cm36651->power_state & PROXIMITY_ENABLED)) {
 			if (cm36651->pdata->cm36651_led_on) {
