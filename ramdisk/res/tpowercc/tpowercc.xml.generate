@@ -317,6 +317,38 @@ echo '
   </settingsTab>
 
    <settingsTab name="Pantalla">
+<settingsPane description="Ajustes de pantalla avanzados" name="Configuración de Pantalla">
+      <checkbox description="Activar/Desactivar Touchboost." 
+                name="TouchBoost" 
+                action="generic01 /sys/class/misc/touchboost_switch/touchboost_switch"
+                label="TouchBoost"/>
+        <spinner description="Touch Boost nos permitirá mantener por defecto la fecuencia a un valor menor al pulsar o tocar la pantalla, de modo que puede verse un ahorro mayor en la batería, pero también puede provocar algún que otro lag" name="Touch Boost Level" action="generic /sys/class/misc/touchboost_switch/touchboost_freq">
+             <spinnerItem name="1200MHz" value="1200000"/> 
+             <spinnerItem name="1000MHz" value="1000000"/> 
+             <spinnerItem name="900MHz" value="900000"/> 
+             <spinnerItem name="800MHz (Default)" value="800000"/> 
+             <spinnerItem name="700MHz" value="700000"/> 
+             <spinnerItem name="600MHz" value="600000"/> 
+             <spinnerItem name="500MHz" value="500000"/> 
+             <spinnerItem name="400MHz" value="400000"/> 
+             <spinnerItem name="200MHz" value="200000"/> 
+       </spinner>
+</settingsPane>
+     <settingsPane description="Touch-to-Wake Opciones" name="Touch-to-Wake Opciones">
+       <spinner description="Touch-to-Wake" name="Touch-to-Wake" action="touch2wake touchwake">
+             <spinnerItem name="Desactivado" value="0"/> 
+             <spinnerItem name="Activado" value="1"/> 
+        </spinner>
+      <seekBar description="Touch-To-Wake Delay en segundos (Por defecto son 5s). Ajustar el delay (retardo) a 0 hace que Touch-to Wake esté permanentemente activo !!" 
+		name="Touch-To-Wake Delay" action="touch2wake touchwakedelay" unit=" sec" min="0" reversed="false" step="1" max="60"/>
+
+       <spinner description="Knock-On" name="Knock-On" action="touch2wake knockon">
+             <spinnerItem name="Desactivado" value="0"/> 
+             <spinnerItem name="Activado" value="1"/> 
+        </spinner>        
+        <seekBar description="Knock-On Delay between knocks en milisegunndos (por defecto son 500ms)." 
+		name="Knock-On Delay" action="touch2wake knockondelay" unit=" msec" min="0" reversed="false" step="50" max="1000"/>
+   </settingsPane>
 
      <settingsPane name="Mdnie Hijack" 
                     description="si este perfil está activo, tiene que desactivar el perfil Sharpen (stock). Los 2 a la vez no se pueden tener activos."> 
