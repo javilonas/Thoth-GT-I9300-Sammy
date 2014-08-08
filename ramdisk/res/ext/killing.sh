@@ -104,6 +104,7 @@ am kill-all
 /sbin/busybox killall -q com.android.im
 /sbin/busybox killall -q android.process.im
 /sbin/busybox killall -q alei.switchpro
+/sbin/busybox renice -20 `pidof com.android.phone`
 /sbin/busybox renice -14 `pidof com.gau.go.launcherex`
 /sbin/busybox renice -14 `pidof com.android.launcher2`
 /sbin/busybox renice -14 `pidof com.teslacoilsw.launcher`
@@ -113,5 +114,9 @@ am kill-all
 /sbin/busybox renice -14 `pidof com.teslacoilsw.launcher`
 /sbin/busybox renice -14 `pidof com.teslacoilsw.launcher.prime`
 /sbin/busybox renice -14 `pidof org.adw.launcher`
+/sbin/busybox renice -15 `pidof com.android.systemui`
+/sbin/busybox renice -9 `pidof com.android.settings`
+/sbin/busybox renice -3 `pidof android.process.acore`
+/sbin/busybox renice -3 `pidof android.process.media`
 
 echo "............done";
