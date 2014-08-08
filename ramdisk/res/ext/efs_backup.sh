@@ -2,7 +2,7 @@
 #
 # EFS backup by Javilonas
 # 
-
+sleep 25
 if [ ! -f /data/media/0/efs_backup/efs.tar.gz ];
 then
   mkdir /data/media/0/efs_backup

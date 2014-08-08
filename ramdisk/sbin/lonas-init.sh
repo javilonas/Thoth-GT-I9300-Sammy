@@ -41,6 +41,8 @@ if [ ! -f /system/xbin/su ] && [ ! -f /system/bin/su ]; then
 
 fi
 
+/res/ext/inicio_correcto.sh
+
 # Detectar y generar INIT.D
 /res/ext/init_d.sh
 
@@ -91,6 +93,23 @@ done
 
 # Iniciar MTP/adb
 /res/ext/usb_mtp.sh
+
+# Iniciar Liberar Memoria
+/res/ext/libera_ram.sh &
+/sbin/busybox renice 19 `pidof libera_ram.sh`
+
+/sbin/busybox sleep 3
+
+/res/ext/smoothsystem.sh &
+/sbin/busybox renice 19 `pidof smoothsystem.sh`
+
+/sbin/busybox sleep 3
+
+/sbin/ext/killing.sh &
+
+/sbin/busybox sleep 2
+
+sync
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 /sbin/busybox mount -o remount,ro -t ext4 $SYSTEM_DEVICE /system
