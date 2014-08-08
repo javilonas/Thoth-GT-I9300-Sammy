@@ -1,6 +1,6 @@
 #!/sbin/busybox sh
 #
-# ZdualSwap 06-08-2014
+# ZdualSwap 08-08-2014
 # Copyright 2014 Javier Sayago "Javilonas"
 # Contact: javilonas@esp-desarrolladores.com
 # 
@@ -16,10 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# 256MB Zdualswap
+# 483MB Zdualswap 400 MB Zram + 10% Zswap
 
 # Tamaño Zswap
-zswap_size=181
+zswap_size=83
 
 # ZSWAP
 if [ $zswap_size -gt 0 ]; then
@@ -31,7 +31,7 @@ fi
 sleep 3
 
 # Tamaño Zram
-zram_size=75
+zram_size=400
 
 # ZRAM
 if [ $zram_size -gt 0 ]; then
