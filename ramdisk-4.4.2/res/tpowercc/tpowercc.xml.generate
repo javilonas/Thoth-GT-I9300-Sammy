@@ -246,7 +246,7 @@ echo '
     <settingsPane name="Swappiness" 
                   description="Un valor bajo significa que el kernel va a tratar de evitar el intercambio tanto como sea posible, por contra en un valor más alto intentará de usar el espacio de intercambio de un modo mas agresivo, en resumen: al bajar su valor, le indicamos que use mas caché y menos swap y al subirlo le estamos indicamos al sistema, que use menos Swap y mas caché y memoria RAM. un Valor 0 desactivaría el intercambio de memoria (swap o zram), el tope por norma general es 100, aunque he dejado opción hasta 200.">   
 
-      <seekBar  description="Por defecto: 90." 
+      <seekBar  description="Por defecto: 80." 
                 name="Virtual machine swappiness" 
                 action="generic /proc/sys/vm/swappiness"
                 unit="%" min="0" reversed="false" step="5" max="200"/>
@@ -264,9 +264,9 @@ echo '
     </settingsPane>
 
     <settingsPane name="Dirty Writeback Centisecs" 
-                  description="Esto le indica al kernel cada cuantos segundos debe escribir los datos al disco. El valor por defecto es de 1500, que equivale a 1,5 segundos. Este parámetro puede influir bastante en rendimiento y gasto de batería, así que ojo con el">
+                  description="Esto le indica al kernel cada cuantos segundos debe escribir los datos al disco. El valor por defecto es de 1500, que equivale a 3 segundos. Este parámetro puede influir bastante en rendimiento y gasto de batería, así que ojo con el">
      
-      <seekBar  description="Por defecto: 1500." 
+      <seekBar  description="Por defecto: 3000." 
                 name="Dirty Writeback Centisecs" 
                 action="generic /proc/sys/vm/dirty_writeback_centisecs"
                 unit="%" min="0" reversed="false" step="1" max="6000"/>
@@ -274,9 +274,9 @@ echo '
     </settingsPane>
 
     <settingsPane name="Dirty Expire Centisecs" 
-                  description="dirty_expire_centisecs define cuando los datos en memoria que se encuentran marcados como sucios (dirty) son lo suficientemente antiguos como para ser candidatos a escritura. El valor por defecto es 300. Este parámetro puede influir bastante en rendimiento y gasto de batería, así que ojo con el">
+                  description="dirty_expire_centisecs define cuando los datos en memoria que se encuentran marcados como sucios (dirty) son lo suficientemente antiguos como para ser candidatos a escritura. El valor por defecto es 500. Este parámetro puede influir bastante en rendimiento y gasto de batería, así que ojo con el">
      
-      <seekBar  description="Por defecto: 300." 
+      <seekBar  description="Por defecto: 500." 
                 name="Dirty Expire Centisecs" 
                 action="generic /proc/sys/vm/dirty_expire_centisecs"
                 unit="%" min="0" reversed="false" step="1" max="6000"/>
@@ -322,11 +322,11 @@ echo '
                 name="TouchBoost" 
                 action="generic01 /sys/class/misc/touchboost_switch/touchboost_switch"
                 label="TouchBoost"/>
-        <spinner description="Touch Boost nos permitirá mantener por defecto la fecuencia a un valor menor al pulsar o tocar la pantalla, de modo que puede verse un ahorro mayor en la batería, pero también puede provocar algún que otro lag" name="Touch Boost Level" action="generic /sys/class/misc/touchboost_switch/touchboost_freq">
+        <spinner description="Touch Boost nos permitirá mantener por defecto la fecuencia a un valor menor al pulsar o tocar la pantalla, de modo que puede verse un ahorro mayor en la batería, pero también puede provocar algún que otro lag. Por defecto a 600 MHz" name="Touch Boost Level" action="generic /sys/class/misc/touchboost_switch/touchboost_freq">
              <spinnerItem name="1200MHz" value="1200000"/> 
              <spinnerItem name="1000MHz" value="1000000"/> 
              <spinnerItem name="900MHz" value="900000"/> 
-             <spinnerItem name="800MHz (Default)" value="800000"/> 
+             <spinnerItem name="800MHz" value="800000"/> 
              <spinnerItem name="700MHz" value="700000"/> 
              <spinnerItem name="600MHz" value="600000"/> 
              <spinnerItem name="500MHz" value="500000"/> 
