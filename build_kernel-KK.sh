@@ -42,9 +42,9 @@ TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-lin
 TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.07/bin"
 ROOTFS_PATH="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy/ramdisk-4.4.2"
 RAMFS_TMP="/home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3"
-export KERNEL_VERSION="Thoth-4.6"
+export KERNEL_VERSION="Thoth-4.7"
 export VERSION_KL="SAMMY-4.4.2"
-export REVISION="RC"
+export REVISION="RTM"
 
 export KBUILD_BUILD_VERSION="1"
 
