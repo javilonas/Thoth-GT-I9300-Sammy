@@ -342,6 +342,7 @@ static struct dbs_tuners {
 	.hotplug_lock = ATOMIC_INIT(0),
 	.dvfs_debug = 0,
 	.ignore_nice = 0,
+	.io_is_busy = 1,
 #ifdef CONFIG_HAS_EARLYSUSPEND
 #endif
 };
