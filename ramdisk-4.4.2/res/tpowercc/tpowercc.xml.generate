@@ -9,7 +9,7 @@ echo '
 
 echo '
   <settingsTab name="CPU">
-      <settingsPane description="PegasusQ es el gobernador por defecto para el funcionamiento diario. Desde aquí podrá modificar los diferentes valores que este contiene, ajústelo a su gusto o bien elija otro mas acorde a su uso diario." 
+      <settingsPane description="Desde aquí podrá modificar los diferentes valores que este contiene, ajústelo a su gusto o bien elija otro mas acorde a su uso diario. Por defecto: Intelliactive" 
                   name="Elegir gobernador Activo">' >> $XML
 echo "
       <spinner description=\"Elegir Governador Activo. Default: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`\" 
