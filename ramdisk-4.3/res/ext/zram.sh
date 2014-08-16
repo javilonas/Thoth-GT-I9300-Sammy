@@ -1,10 +1,10 @@
 #!/sbin/busybox sh
 #
-# Zram 100MB x 4 = 400MB
+# Zram 75MB x 4 = 300MB
 #
 
 # Tamaño Zram
-zram_size=400
+zram_size=300
 
 # ZRAM
 if [ $zram_size -gt 0 ]; then
