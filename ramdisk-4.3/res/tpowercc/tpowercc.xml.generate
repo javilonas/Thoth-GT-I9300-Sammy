@@ -9,10 +9,10 @@ echo '
 
 echo '
   <settingsTab name="CPU">
-      <settingsPane description="Desde aquí podrá modificar los diferentes valores que este contiene, ajústelo a su gusto o bien elija otro mas acorde a su uso diario. Por defecto: Intelliactive"
+      <settingsPane description="Desde aquí podrá modificar los diferentes valores que este contiene, ajústelo a su gusto o bien elija otro mas acorde a su uso diario. Por defecto: Lulzactiveq" 
                   name="Elegir gobernador Activo">' >> $XML
 echo "
-      <spinner description=\"Elegir Governador Activo. Default: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`\" 
+      <spinner description=\"Governador Activo: `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`\" 
                name=\"Governor Activo\" 
                action=\"generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor\">" >> $XML
 
@@ -246,7 +246,7 @@ echo '
     <settingsPane name="Swappiness" 
                   description="Un valor bajo significa que el kernel va a tratar de evitar el intercambio tanto como sea posible, por contra en un valor más alto intentará de usar el espacio de intercambio de un modo mas agresivo, en resumen: al bajar su valor, le indicamos que use mas caché y menos swap y al subirlo le estamos indicamos al sistema, que use menos Swap y mas caché y memoria RAM. un Valor 0 desactivaría el intercambio de memoria (swap o zram), el tope por norma general es 100, aunque he dejado opción hasta 200.">   
 
-      <seekBar  description="Por defecto: 30." 
+      <seekBar  description="Por defecto: 90." 
                 name="Virtual machine swappiness" 
                 action="generic /proc/sys/vm/swappiness"
                 unit="%" min="0" reversed="false" step="5" max="200"/>

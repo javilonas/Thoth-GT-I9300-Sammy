@@ -1,10 +1,10 @@
-swappiness=30
+swappiness=90
 hijack=off
 sharpen=on
 led_fade=on
 led_speed=1
 led_intensity=40
-scaling_governor=intelliactive
+scaling_governor=lulzactiveq
 internal_iosched=row
 sd_iosched=row
 internal_read_ahead_kb=256
