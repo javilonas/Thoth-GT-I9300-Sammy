@@ -1,6 +1,9 @@
 /*
  *  drivers/cpufreq/cpufreq_pegasusq.c
  *
+ *  Add push CPU frequency to maximum on late_resume + Tweaks
+ *                 2014 Javier Sayago <admin@lonasdigital.com>
+ *
  *  Copyright (C)  2011 Samsung Electronics co. ltd
  *    ByungChang Cha <bc.cha@samsung.com>
  *
@@ -35,6 +38,9 @@
 #include <linux/earlysuspend.h>
 #endif
 #define EARLYSUSPEND_HOTPLUGLOCK 1
+
+#include <mach/cpufreq.h>
+#include <../kernel/power/power.h>
 
 /*
  * runqueue average
@@ -144,13 +150,13 @@ static unsigned int get_nr_run_avg(void)
  */
 
 #define DEF_SAMPLING_DOWN_FACTOR		(2)
-#define MAX_SAMPLING_DOWN_FACTOR		(80000)
+#define MAX_SAMPLING_DOWN_FACTOR		(100000)
 #define DEF_FREQUENCY_DOWN_DIFFERENTIAL		(5)
-#define DEF_FREQUENCY_UP_THRESHOLD		(85)
+#define DEF_FREQUENCY_UP_THRESHOLD		(82)
 #define DEF_FREQUENCY_MIN_SAMPLE_RATE		(10000)
-#define MIN_FREQUENCY_UP_THRESHOLD		(60)
-#define MAX_FREQUENCY_UP_THRESHOLD		(90)
-#define DEF_SAMPLING_RATE			(50000)
+#define MIN_FREQUENCY_UP_THRESHOLD		(11)
+#define MAX_FREQUENCY_UP_THRESHOLD		(100)
+#define DEF_SAMPLING_RATE			(30000)
 #define MIN_SAMPLING_RATE			(10000)
 #define MAX_HOTPLUG_RATE			(40u)
 
@@ -159,27 +165,27 @@ static unsigned int get_nr_run_avg(void)
 #define DEF_CPU_UP_FREQ				(500000)
 #define DEF_CPU_DOWN_FREQ			(200000)
 #define DEF_UP_NR_CPUS				(1)
-#define DEF_CPU_UP_RATE				(10)
-#define DEF_CPU_DOWN_RATE			(20)
+#define DEF_CPU_UP_RATE				(16)
+#define DEF_CPU_DOWN_RATE			(30)
 #define DEF_FREQ_STEP				(37)
 #define DEF_START_DELAY				(0)
 
 #define UP_THRESHOLD_AT_MIN_FREQ		(40)
-#define FREQ_FOR_RESPONSIVENESS			(500000)
+#define FREQ_FOR_RESPONSIVENESS			(400000)
 
 #define HOTPLUG_DOWN_INDEX			(0)
 #define HOTPLUG_UP_INDEX			(1)
 
 #ifdef CONFIG_MACH_MIDAS
 static int hotplug_rq[4][2] = {
-	{0, 100}, {100, 200}, {200, 300}, {300, 0}
+	{0, 175}, {175, 275}, {275, 375}, {375, 0}
 };
 
 static int hotplug_freq[4][2] = {
 	{0, 500000},
 	{200000, 500000},
-	{200000, 500000},
-	{200000, 0}
+	{200000, 700000},
+	{400000, 0}
 };
 #else
 static int hotplug_rq[4][2] = {
@@ -1308,6 +1314,8 @@ unsigned int prev_freq_step;
 unsigned int prev_sampling_rate;
 static void cpufreq_pegasusq_early_suspend(struct early_suspend *h)
 {
+	struct cpu_dbs_info_s *dbs_info;
+
 #if EARLYSUSPEND_HOTPLUGLOCK
 	dbs_tuners_ins.early_suspend =
 		atomic_read(&g_hotplug_lock);
@@ -1331,10 +1339,17 @@ static void cpufreq_pegasusq_late_resume(struct early_suspend *h)
 	dbs_tuners_ins.early_suspend = -1;
 	dbs_tuners_ins.freq_step = prev_freq_step;
 	dbs_tuners_ins.sampling_rate = prev_sampling_rate;
+
 #if EARLYSUSPEND_HOTPLUGLOCK
 	apply_hotplug_lock();
 	start_rq_work();
 #endif
+
+	if (cpufreq_max_limit_val != -1) {
+		pr_info("%s: pushing CPU frequency to %d\n", __func__, cpufreq_max_limit_val);
+		dbs_info = &per_cpu(od_cpu_dbs_info, 0);
+		dbs_freq_increase(dbs_info->cur_policy, cpufreq_max_limit_val);
+	}
 }
 #endif
 
