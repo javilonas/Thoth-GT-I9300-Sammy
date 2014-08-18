@@ -1366,7 +1366,7 @@ static void __exit cpufreq_gov_dbs_exit(void)
  */
 
 MODULE_AUTHOR("Javier Sayago <admin@lonasdigital.com>");
-MODULE_DESCRIPTION("'cpufreq_impulse' - A dynamic cpufreq/cpuhotplug impulse governor"
+MODULE_DESCRIPTION("'cpufreq_impulse' - A dynamic cpufreq/cpuhotplug impulse governor");
 MODULE_LICENSE("GPL");
 
 #ifdef CONFIG_CPU_FREQ_DEFAULT_GOV_IMPULSE
