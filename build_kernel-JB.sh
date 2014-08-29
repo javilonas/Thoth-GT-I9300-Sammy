@@ -1,30 +1,9 @@
 #!/bin/sh
 # Build Script: Javilonas, 14-12-2013
 # Javilonas <admin@lonasdigital.com>
-
+start_time=`date +'%d/%m/%y %H:%M:%S'`
 echo "#################### Eliminando Restos ####################"
-if [ -e boot.img ]; then
-        rm boot.img
-fi
-
-if [ -e compile.log ]; then
-        rm compile.log
-fi
-
-if [ -e ramdisk.cpio ]; then
-        rm ramdisk.cpio
-fi
-
-if [ -e ramdisk.cpio.gz ]; then
-        rm ramdisk.cpio.gz
-fi
-
-#make distclean
-make clean && make mrproper
-rm Module.symvers
-
-cp arch/arm/configs/lonas_defconfig .config;
-
+./clean.sh > /dev/null 2>&1
 echo "#################### Preparando Entorno ####################"
 export KERNELDIR=`readlink -f .`
 export ARCH=arm
@@ -42,11 +21,16 @@ TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-lin
 TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.07/bin"
 ROOTFS_PATH="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy/ramdisk-4.3"
 RAMFS_TMP="/home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3"
-export KERNEL_VERSION="Thoth-4.8"
-export VERSION_KL="SAMMY-4.3"
+
+export KERNEL_VERSION="Thoth-4.9"
+export VERSION_KL="GT-I9300-SAMMY-4.3"
 export REVISION="RTM"
 
 export KBUILD_BUILD_VERSION="1"
+
+cp arch/arm/configs/lonas_defconfig .config
+
+. $KERNELDIR/.config
 
 echo "#################### Aplicando Permisos correctos ####################"
 chmod 644 $ROOTFS_PATH/*.rc
@@ -78,7 +62,7 @@ make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l
 make ARCH=arm CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` clean
 
 find -name '*.ko' -exec rm -rf {} \;
-rm -rf $KERNELDIR/arch/arm/boot/zImage
+rm -rf $KERNELDIR/arch/arm/boot/zImage > /dev/null 2>&1
 
 echo "#################### Make defconfig ####################"
 make ARCH=arm CROSS_COMPILE=$TOOLCHAIN lonas_defconfig
@@ -98,22 +82,22 @@ find . -name '*.ko' -exec cp -av {} $ROOTFS_PATH/lib/modules/ \;
 $TOOLCHAIN_PATCH/arm-cortex_a9-linux-gnueabihf-strip --strip-unneeded $ROOTFS_PATH/lib/modules/*.ko
 
 echo "#################### Update Ramdisk ####################"
-rm -f $KERNELDIR/releasetools/tar/$KERNEL_VERSION-$REVISION$KBUILD_BUILD_VERSION-$VERSION_KL.tar
-rm -f $KERNELDIR/releasetools/zip/$KERNEL_VERSION-$REVISION$KBUILD_BUILD_VERSION-$VERSION_KL.zip
+rm -f $KERNELDIR/releasetools/tar/$KERNEL_VERSION-$REVISION$KBUILD_BUILD_VERSION-$VERSION_KL.tar > /dev/null 2>&1
+rm -f $KERNELDIR/releasetools/zip/$KERNEL_VERSION-$REVISION$KBUILD_BUILD_VERSION-$VERSION_KL.zip > /dev/null 2>&1
 cp -f $KERNELDIR/arch/arm/boot/zImage .
 
-rm -rf $RAMFS_TMP
-rm -rf $RAMFS_TMP.cpio
-rm -rf $RAMFS_TMP.cpio.gz
-rm -rf $KERNELDIR/*.cpio
-rm -rf $KERNELDIR/*.cpio.gz
+rm -rf $RAMFS_TMP > /dev/null 2>&1
+rm -rf $RAMFS_TMP.cpio > /dev/null 2>&1
+rm -rf $RAMFS_TMP.cpio.gz > /dev/null 2>&1
+rm -rf $KERNELDIR/*.cpio > /dev/null 2>&1
+rm -rf $KERNELDIR/*.cpio.gz > /dev/null 2>&1
 cd $ROOTFS_PATH
 cp -ax $ROOTFS_PATH $RAMFS_TMP
 find $RAMFS_TMP -name .git -exec rm -rf {} \;
 find $RAMFS_TMP -name EMPTY_DIRECTORY -exec rm -rf {} \;
 find $RAMFS_TMP -name .EMPTY_DIRECTORY -exec rm -rf {} \;
-rm -rf $RAMFS_TMP/tmp/*
-rm -rf $RAMFS_TMP/.hg
+rm -rf $RAMFS_TMP/tmp/* > /dev/null 2>&1
+rm -rf $RAMFS_TMP/.hg > /dev/null 2>&1
 
 echo "#################### Build Ramdisk ####################"
 cd $RAMFS_TMP
@@ -143,10 +127,13 @@ tar cf $KERNEL_VERSION-$REVISION$KBUILD_BUILD_VERSION-$VERSION_KL.tar boot.img &
 
 echo "#################### Eliminando restos ####################"
 
-rm $KERNELDIR/releasetools/zip/boot.img
-rm $KERNELDIR/releasetools/tar/boot.img
-rm $KERNELDIR/boot.img
-rm $KERNELDIR/zImage
-rm -rf /home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3
-rm /home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3.cpio.gz
+rm $KERNELDIR/releasetools/zip/boot.img > /dev/null 2>&1
+rm $KERNELDIR/releasetools/tar/boot.img > /dev/null 2>&1
+rm $KERNELDIR/boot.img > /dev/null 2>&1
+rm $KERNELDIR/zImage > /dev/null 2>&1
+rm $KERNELDIR/zImage-dtb > /dev/null 2>&1
+rm $KERNELDIR/boot.dt.img > /dev/null 2>&1
+rm $KERNELDIR/dt.img > /dev/null 2>&1
+rm -rf /home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3 > /dev/null 2>&1
+rm /home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3.cpio.gz > /dev/null 2>&1
 echo "#################### Terminado ####################"

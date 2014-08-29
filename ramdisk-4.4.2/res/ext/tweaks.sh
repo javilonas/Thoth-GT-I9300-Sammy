@@ -120,3 +120,5 @@ echo HRTICK > /sys/kernel/debug/sched_features
 /sbin/busybox setprop ro.ril.enable.a53 1
 /sbin/busybox setprop ro.ril.enable.3g.prefix 1
 
+/sbin/busybox setprop dalvik.vm.lockprof.threshold 500
+
