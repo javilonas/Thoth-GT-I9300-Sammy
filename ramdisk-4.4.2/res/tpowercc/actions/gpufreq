@@ -82,6 +82,60 @@ case "$gpufreqpredef" in
     gpufreq_predef="7"
     write_values
     ;;
+  8)
+    # 108/200/350/533/666 (Especial)
+    gpu_control_freq="160 350 533 640 733"
+    gpufreq_predef="8"
+    write_values
+    ;;
+  9)
+    # 160/350/533/640/733 (Especial)
+    gpu_control_freq="160 350 533 640 733"
+    gpufreq_predef="9"
+    write_values
+    ;;
+  10)
+    # 266/440/640/733/800 (Especial)
+    gpu_control_freq="266 440 640 733 800"
+    gpufreq_predef="10"
+    write_values
+    ;;
+  11)
+    # 266/350/440/533/533 (Especial)
+    gpu_control_freq="266 350 440 533 533"
+    gpufreq_predef="11"
+    write_values
+    ;;
+  12)
+    # 160/266/350/440/440 (Especial)
+    gpu_control_freq="160 266 350 440 440"
+    gpufreq_predef="12"
+    write_values
+    ;;
+  13)
+    # 108/160/200/266/350 (Especial)
+    gpu_control_freq="108 160 200 266 350"
+    gpufreq_predef="13"
+    write_values
+    ;;
+  14)
+    # 266/350/440/533/666 (Especial)
+    gpu_control_freq="266 350 440 533 666"
+    gpufreq_predef="14"
+    write_values
+    ;;
+  15)
+    # 266/350/440/640/700 (Especial)
+    gpu_control_freq="266 350 440 533 700"
+    gpufreq_predef="15"
+    write_values
+    ;;
+  16)
+    # 160/350/533/733/800 (Especial)
+    gpu_control_freq="160 350 533 733 800"
+    gpufreq_predef="16"
+    write_values
+    ;;
   *)
     if [[ ! -z $gpufreq_find ]]; then
       gpufreq_predef="$gpufreq_find"

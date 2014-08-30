@@ -76,6 +76,12 @@ case "$gpuvoltpredef" in
     gpuvolt_predef="6"
     write_values
     ;;
+  7)
+    # -12,5
+    gpu_control_uV="862500 887500 937500 1012500 1062500"
+    gpuvolt_predef="7"
+    write_values
+    ;;
   *)
     if [[ ! -z $gpuvolt_find ]]; then
       gpuvolt_predef="$gpuvolt_find"
