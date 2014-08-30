@@ -18,6 +18,8 @@ echo "8" > /proc/sys/vm/page-cluster
 
 echo "0" > /proc/sys/kernel/randomize_va_space
 
+echo "50" > /sys/module/zswap/parameters/max_pool_percent
+
 # IPv6 privacy tweak
 echo "2" > /proc/sys/net/ipv6/conf/all/use_tempaddr
 
