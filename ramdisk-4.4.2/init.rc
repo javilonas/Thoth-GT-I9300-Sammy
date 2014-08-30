@@ -672,6 +672,9 @@ on boot
     chown system system /sys/class/sec/led/led_br_lev
     chown system system /sys/class/sec/led/led_lowpower
 
+# Mobicore
+    mkdir /data/app/mcRegistry 0775 system system
+
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
