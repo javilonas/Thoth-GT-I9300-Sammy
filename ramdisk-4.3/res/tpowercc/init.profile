@@ -1,4 +1,4 @@
-swappiness=90
+swappiness=30
 hijack=off
 sharpen=on
 led_fade=on

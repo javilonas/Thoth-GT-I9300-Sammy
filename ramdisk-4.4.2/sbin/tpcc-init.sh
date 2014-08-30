@@ -28,13 +28,6 @@ if [ ! -f /system/lib/modules ]; then
 /sbin/busybox ln -s /lib/modules/ /system/lib
 fi
 
-# Iniciar zdualswap
-/res/ext/zdualswap.sh
-
-/sbin/busybox sync
-
-/sbin/busybox sleep 2
-
 # Aplicar Fstrim
 /sbin/fstrim -v /data
 /sbin/fstrim -v /cache
