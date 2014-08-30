@@ -33,7 +33,14 @@ fi
 
 /sbin/busybox sync
 
-/sbin/busybox sleep 5
+/sbin/busybox sleep 2
+
+# Iniciar zswap
+/res/ext/zswap.sh
+
+/sbin/busybox sync
+
+/sbin/busybox sleep 2
 
 # Aplicar Fstrim
 /sbin/fstrim -v /data
