@@ -16,14 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# 483MB Zdualswap 400 MB Zram + 10% Zswap
+# 300 MB Zram + 12,5% Zswap de la memoria RAM disponible
 
 # Tamaño Zswap
-zswap_size=83
+ramsize=`grep MemTotal /proc/meminfo | awk '{ print \$2 }'`
+zswap_size=$(($ramsize*128))
 
 # ZSWAP
 if [ $zswap_size -gt 0 ]; then
-echo `expr $zswap_size \* 1024 \* 1024` > /sys/devices/virtual/block/vnswap0/disksize
+echo $zswap_size > /sys/devices/virtual/block/vnswap0/disksize
+/sbin/busybox swapoff /dev/block/vnswap0 > /dev/null 2>&1
 /sbin/busybox mkswap /dev/block/vnswap0 > /dev/null 2>&1
 /sbin/busybox swapon -p 2 /dev/block/vnswap0 > /dev/null 2>&1
 fi
@@ -31,7 +33,7 @@ fi
 sleep 3
 
 # Tamaño Zram
-zram_size=400
+zram_size=300
 
 # ZRAM
 if [ $zram_size -gt 0 ]; then

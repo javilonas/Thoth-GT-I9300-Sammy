@@ -28,15 +28,8 @@ if [ ! -f /system/lib/modules ]; then
 /sbin/busybox ln -s /lib/modules/ /system/lib
 fi
 
-# Iniciar zram
-/res/ext/zram.sh
-
-/sbin/busybox sync
-
-/sbin/busybox sleep 2
-
-# Iniciar zswap
-/res/ext/zswap.sh
+# Iniciar zdualswap
+/res/ext/zdualswap.sh
 
 /sbin/busybox sync
 

@@ -66,9 +66,6 @@ fi
 # Iniciar Tweaks Lonas_KL
 /res/ext/tweaks.sh
 
-# Iniciar zswap
-#/res/ext/zswap.sh
-
 # Iniciar Sensor
 /res/ext/sensors.sh
 
