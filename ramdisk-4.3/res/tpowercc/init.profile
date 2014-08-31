@@ -1,4 +1,4 @@
-swappiness=30
+swappiness=90
 hijack=off
 sharpen=on
 led_fade=on
@@ -41,7 +41,7 @@ chargeaccurrent_predef=1
 enable_mask=2
 enable_mask_predef=2
 zram_size=90
-zswap_size=0
+zswap_size=64
 CONTROLSWITCH_CPU=on
 CONTROLSWITCH_LMK=on
 CONFIG_BOOTED=true
