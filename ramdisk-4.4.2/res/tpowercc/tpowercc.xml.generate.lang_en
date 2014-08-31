@@ -144,7 +144,7 @@ echo "
              <spinnerItem name=\"108MHz\" value=\"108\"/>
              <spinnerItem name=\"54MHz\" value=\"54\"/>
       </spinner>
-      <spinner description="Changes the second GPU frequency step" name="GPU Freq Step2" action="gpu-freq 2"> 
+      <spinner description=\"Changes the second GPU frequency step\" name=\"GPU Freq Step2\" action=\"gpu-freq 2\"> 
              <spinnerItem name=\"800MHz\" value=\"800\"/>
              <spinnerItem name=\"750MHz\" value=\"750\"/>
              <spinnerItem name=\"733MHz\" value=\"733\"/>
@@ -166,7 +166,7 @@ echo "
              <spinnerItem name=\"108MHz\" value=\"108\"/>
              <spinnerItem name=\"54MHz\" value=\"54\"/>
       </spinner>
-      <spinner description="Changes the third GPU frequency step" name="GPU Freq Step3" action="gpu-freq 3">
+      <spinner description=\"Changes the third GPU frequency step\" name=\"GPU Freq Step3\" action=\"gpu-freq 3\">
              <spinnerItem name=\"800MHz\" value=\"800\"/>
              <spinnerItem name=\"750MHz\" value=\"750\"/>
              <spinnerItem name=\"733MHz\" value=\"733\"/>
@@ -188,7 +188,7 @@ echo "
              <spinnerItem name=\"108MHz\" value=\"108\"/>
              <spinnerItem name=\"54MHz\" value=\"54\"/>
       </spinner>
-      <spinner description="Changes the fourth GPU frequency step" name="GPU Freq Step4" action="gpu-freq 4">
+      <spinner description=\"Changes the fourth GPU frequency step\" name=\"GPU Freq Step4\" action=\"gpu-freq 4\">
              <spinnerItem name=\"800MHz\" value=\"800\"/>
              <spinnerItem name=\"750MHz\" value=\"750\"/>
              <spinnerItem name=\"733MHz\" value=\"733\"/>
@@ -210,7 +210,7 @@ echo "
              <spinnerItem name=\"108MHz\" value=\"108\"/>
              <spinnerItem name=\"54MHz\" value=\"54\"/>
       </spinner>
-      <spinner description="Changes the fifth GPU frequency step" name="GPU Freq Step5" action="gpu-freq 5">
+      <spinner description=\"Changes the fifth GPU frequency step\" name=\"GPU Freq Step5\" action=\"gpu-freq 5\">
              <spinnerItem name=\"800MHz\" value=\"800\"/>
              <spinnerItem name=\"750MHz\" value=\"750\"/>
              <spinnerItem name=\"733MHz\" value=\"733\"/>
