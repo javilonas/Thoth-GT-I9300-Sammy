@@ -269,20 +269,20 @@ echo '
     <settingsPane name="ZRAM" 
                   description=" ">
 
-      <seekBar  description="From here you can increase or decrease the size of Zram. Default: 300 Mb" 
+      <seekBar  description="From here you can increase or decrease the size of Zram. Default: 90 x 4 = 360 Mb"
                 name="ZRAM" 
                 action="zram"
-                unit="mB" min="0" reversed="false" step="5" max="1025"/>      
+                unit="mB x 4" min="0" reversed="false" step="5" max="500"/>
 
     </settingsPane>
 
     <settingsPane name="ZSWAP" 
                   description=" ">
 
-      <seekBar  description="From here you can increase or decrease the size of Zswap. Default: 0 Mb" 
-                name="ZSWAP" 
+      <seekBar  description="From here you can increase or decrease the size of Zswap. Default: 0 Mb"
+                name="ZSWAP"
                 action="zswap"
-                unit="mB" min="0" reversed="false" step="5" max="1025"/>      
+                unit="mB" min="0" reversed="false" step="5" max="1025"/>
 
     </settingsPane>
 
