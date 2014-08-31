@@ -121,26 +121,116 @@ echo "
     </settingsPane>
 " >> $XML
 echo "
-    <settingsPane description=\"Select the profile that best suits your terminal\" name=\"GPU freq\">
-      <spinner description=\"Default: GPU freq: 266/350/440/533/640\" name=\"GPU freq\" action=\"gpufreq gpufreqpredef\">
-             <spinnerItem name=\"GPU freq: 108/160/200/266/350\" value=\"13\"/>
-             <spinnerItem name=\"GPU freq: 160/266/350/400/440\" value=\"1\"/>
-             <spinnerItem name=\"GPU freq: 160/266/350/440/440\" value=\"12\"/>
-             <spinnerItem name=\"GPU freq: 160/266/350/440/533\" value=\"0\"/>
-             <spinnerItem name=\"GPU freq: 266/350/440/533/533\" value=\"11\"/>
-             <spinnerItem name=\"GPU freq: 266/350/440/533/640\" value=\"2\"/>
-             <spinnerItem name=\"GPU freq: 108/200/350/533/666\" value=\"8\"/>
-             <spinnerItem name=\"GPU freq: 266/350/440/533/666\" value=\"14\"/>
-             <spinnerItem name=\"GPU freq: 350/440/533/640/666\" value=\"3\"/>
-             <spinnerItem name=\"GPU freq: 266/350/440/640/700\" value=\"15\"/>
-             <spinnerItem name=\"GPU freq: 440/533/600/640/700\" value=\"4\"/>
-             <spinnerItem name=\"GPU freq: 160/350/533/640/733\" value=\"9\"/>
-             <spinnerItem name=\"GPU freq: 266/350/440/640/733\" value=\"16\"/>
-             <spinnerItem name=\"GPU freq: 533/600/640/700/733\" value=\"5\"/>
-             <spinnerItem name=\"GPU freq: 600/640/700/733/750\" value=\"6\"/>
-             <spinnerItem name=\"GPU freq: 160/350/533/733/800\" value=\"16\"/>
-             <spinnerItem name=\"GPU freq: 266/440/640/733/800\" value=\"10\"/>
-             <spinnerItem name=\"GPU freq: 640/700/733/750/800\" value=\"7\"/>
+    <settingsPane description=\"GPU Frequency Settings. Default frequencies are: 160, 266, 350, 440MHz and 533MHz. Warning: Changing GPU frequency or voltages may cause lockups or damage on your device.\" name=\"GPUFreq\">
+      <spinner description=\"Changes the first (lowest) GPU frequency step\" name=\"GPU Freq Step1\" action=\"gpu-freq 1\">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description="Changes the second GPU frequency step" name="GPU Freq Step2" action="gpu-freq 2"> 
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description="Changes the third GPU frequency step" name="GPU Freq Step3" action="gpu-freq 3">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description="Changes the fourth GPU frequency step" name="GPU Freq Step4" action="gpu-freq 4">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description="Changes the fifth GPU frequency step" name="GPU Freq Step5" action="gpu-freq 5">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
       </spinner>
     </settingsPane>
 " >> $XML
