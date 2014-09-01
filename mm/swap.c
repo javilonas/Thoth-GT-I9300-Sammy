@@ -635,9 +635,6 @@ void release_pages(struct page **pages, int nr, int cold)
 			del_page_from_lru(zone, page);
 		}
 
-		/* Clear Active bit in case of parallel mark_page_accessed */
-		ClearPageActive(page);
-
 		if (!pagevec_add(&pages_to_free, page)) {
 			if (zone) {
 				spin_unlock_irqrestore(&zone->lru_lock, flags);
