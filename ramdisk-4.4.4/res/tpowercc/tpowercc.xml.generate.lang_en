@@ -1,0 +1,793 @@
+#!/sbin/busybox sh
+
+XML=$CONFIG_XML
+
+echo "" > $XML
+
+echo '
+<settingsRoot>' >> $XML
+
+echo '
+  <settingsTab name="CPU">
+      <settingsPane description="From here you can change the different values ​​it contains the CPU , adjust to your liking or according to your daily use." 
+                  name="Choose governor Active">' >> $XML
+echo "
+      <spinner description=\"Default: LulzactiveQ\" 
+               name=\"Governor Active\" 
+               action=\"generic /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor\">" >> $XML
+
+for GOVERNOR in `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors`; do
+  echo "
+        <spinnerItem name=\"$GOVERNOR\" value=\"$GOVERNOR\"/>" >> $XML
+done
+
+echo '
+      </spinner>' >> $XML
+  echo "
+<spinner description=\"Default: Idle + LPA\" name=\"CPU Idle (power settings)\" action=\"enable_mask enable_maskpredef\">
+             <spinnerItem name=\"Idle\" value=\"0\"/>
+             <spinnerItem name=\"AFTR\" value=\"1\"/>
+             <spinnerItem name=\"Idle + LPA\" value=\"2\"/>
+             <spinnerItem name=\"AFTR + LPA\" value=\"3\"/>" >> $XML
+echo '
+      </spinner>
+    </settingsPane>
+    <settingsPane description="Apply the boot configuration only if you is stable, otherwise the phone may enter a loop of restarts or not starting." 
+                  name="CPU control switch">
+      <checkbox description="If enabled, the following settings are applied at boot." 
+                name="Set the CPU configuration at boot" 
+                action="controlswitch CPU"
+                label="Set on boot"/>
+
+    </settingsPane>
+
+    <settingsPane description="CPU scaling" 
+                  name="CPU voltaje control">' >> $XML
+
+echo "
+      <spinner description=\"Sets the maximum CPU frequency. Default: 1400 MHz.\" 
+               name=\"CPU max frequency\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq\">" >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+        <spinnerItem name=\"$FREQ MHz\" value=\"${FREQ}000\"/>" >> $XML
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+
+echo "
+      </spinner>
+      <spinner description=\"Sets the minimum CPU frequency. Default: 200 MHz.\" 
+               name=\"CPU min frequency\" 
+               action=\"cpugeneric /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq\">" >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+        <spinnerItem name=\"$FREQ MHz\" value=\"${FREQ}000\"/>" >> $XML
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+echo '
+      </spinner>
+    </settingsPane>
+
+    <settingsPane description="Decreasing voltage will lower power consumption of the CPU. Increasing it on overclocked frequencies improves stability. Too low voltage may cause instabilities and freezes. (Hung)." 
+                  name="CPU voltage control">' >> $XML
+
+while read FREQ UVOLT; do
+  echo "
+      <seekBar  description=\"Voltage default: $UVOLTµV\" 
+	        name=\"${FREQ} MHz step\" 
+                action=\"cpuvolt ${FREQ}\"
+                unit=\"µV\" min=\"600000\" reversed=\"false\" step=\"12500\" max=\"1500000\"/>" >> $XML
+  CPUFREQLIST="$CPUFREQLIST $FREQ"
+done < /sys/devices/system/cpu/cpu0/cpufreq/TP_uV_table
+
+echo '
+    </settingsPane>
+  </settingsTab>
+  <settingsTab name="GPU">
+    <settingsPane description="Apply the boot configuration only if you is stable, otherwise the phone may enter a loop of restarts or not starting." 
+                  name="GPU control switch">
+      <checkbox description="If enabled, the following settings are applied at boot." 
+                name="Set the CPU configuration at boot" 
+                action="controlswitch GPU" 
+                label="Set on boot"/>
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Select the profile that best suits your terminal\" name=\"GPU threshold\">
+      <spinner description=\"Default: GPU threshold: Battsave\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
+             <spinnerItem name=\"GPU Threshold: ExtraBattsave\" value=\"0\"/>
+             <spinnerItem name=\"GPU Threshold: Moderado\" value=\"1\"/>
+             <spinnerItem name=\"GPU Threshold: Battsave\" value=\"2\"/>
+             <spinnerItem name=\"GPU Threshold: Normal (Stock)\" value=\"3\"/>
+             <spinnerItem name=\"GPU Threshold: Semi-Performance\" value=\"4\"/>
+             <spinnerItem name=\"GPU Threshold: Performance\" value=\"5\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo "
+    <settingsPane description=\"Select the profile that best suits your terminal\" name=\"GPU mV\">
+      <spinner description=\"Default: GPU mV: Stock\" name=\"GPU mV\" action=\"gpuvolt gpuvoltpredef\">
+             <spinnerItem name=\"GPU mV: Stock\" value=\"0\"/>
+             <spinnerItem name=\"GPU mV: -12,5\" value=\"7\"/>
+             <spinnerItem name=\"GPU mV: -25\" value=\"1\"/>
+             <spinnerItem name=\"GPU mV: -50\" value=\"2\"/>
+             <spinnerItem name=\"GPU mV: -75\" value=\"3\"/>
+             <spinnerItem name=\"GPU mV: -100\" value=\"4\"/>
+             <spinnerItem name=\"GPU mV: +25\" value=\"5\"/>
+             <spinnerItem name=\"GPU mV: +50\" value=\"6\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo "
+    <settingsPane description=\"GPU Frequency Settings. Default frequencies are: 160, 266, 350, 440MHz and 533MHz. Warning: Changing GPU frequency or voltages may cause lockups or damage on your device.\" name=\"GPUFreq\">
+      <spinner description=\"Changes the first (lowest) GPU frequency step\" name=\"GPU Freq Step1\" action=\"gpu-freq 1\">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description=\"Changes the second GPU frequency step\" name=\"GPU Freq Step2\" action=\"gpu-freq 2\"> 
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description=\"Changes the third GPU frequency step\" name=\"GPU Freq Step3\" action=\"gpu-freq 3\">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description=\"Changes the fourth GPU frequency step\" name=\"GPU Freq Step4\" action=\"gpu-freq 4\">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+      <spinner description=\"Changes the fifth GPU frequency step\" name=\"GPU Freq Step5\" action=\"gpu-freq 5\">
+             <spinnerItem name=\"800MHz\" value=\"800\"/>
+             <spinnerItem name=\"750MHz\" value=\"750\"/>
+             <spinnerItem name=\"733MHz\" value=\"733\"/>
+             <spinnerItem name=\"700MHz\" value=\"700\"/>
+             <spinnerItem name=\"666MHz\" value=\"666\"/>
+             <spinnerItem name=\"640MHz\" value=\"640\"/>
+             <spinnerItem name=\"600MHz\" value=\"600\"/>
+             <spinnerItem name=\"533MHz\" value=\"533\"/>
+             <spinnerItem name=\"500MHz\" value=\"500\"/>
+             <spinnerItem name=\"440MHz\" value=\"440\"/>
+             <spinnerItem name=\"400MHz\" value=\"400\"/>
+             <spinnerItem name=\"350MHz\" value=\"350\"/>
+             <spinnerItem name=\"333MHz\" value=\"333\"/>
+             <spinnerItem name=\"300MHz\" value=\"300\"/>
+             <spinnerItem name=\"275MHz\" value=\"275\"/>
+             <spinnerItem name=\"266MHz\" value=\"266\"/>
+             <spinnerItem name=\"200MHz\" value=\"200\"/>
+             <spinnerItem name=\"160MHz\" value=\"160\"/>
+             <spinnerItem name=\"108MHz\" value=\"108\"/>
+             <spinnerItem name=\"54MHz\" value=\"54\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
+  <settingsTab name="Memory">
+    <settingsPane description="Interface from which you can control and manage your phone memory consumed by one of the different profiles, Normal, Moderate and Moderate Super for optimal performance is advised."  
+                  name="information">
+    </settingsPane>
+    <settingsPane description="Apply the boot configuration only if you is stable, otherwise the phone may enter a loop of restarts or not starting." 
+                  name="LMK control switch">
+      <checkbox description="If enabled, the following settings are applied at boot."
+                name="LMK set on start" 
+                action="controlswitch LMK" 
+                label="Set on boot"/>
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Select the profile you want to use for the memory\" name=\"LMK LowMemoryKiller\">
+      <spinner description=\"Default: Super Moderate\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
+             <spinnerItem name=\"LMK: Normal\" value=\"0\"/>
+             <spinnerItem name=\"LMK: Moderate\" value=\"1\"/>
+             <spinnerItem name=\"LMK: Super Moderate\" value=\"2\"/>
+             <spinnerItem name=\"LMK: Light\" value=\"3\"/>
+             <spinnerItem name=\"LMK: Super Light\" value=\"4\"/>
+             <spinnerItem name=\"LMK: Medium\" value=\"5\"/>
+             <spinnerItem name=\"LMK: Aggressive\" value=\"6\"/>
+             <spinnerItem name=\"LMK: Super Aggressive\" value=\"7\"/>
+      </spinner>
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
+  <settingsTab name="Charger">
+    <settingsPane description="Interface for choose between various load profiles AC/USB, depending for this select, the battery will charge slower or faster."  
+                  name="Information">
+    </settingsPane>' >> $XML
+
+echo "
+    <settingsPane description=\"Select the profile you want, default is to 1200mA, battery charger faster, it is not advisable  plus of 1200mA\" name=\"Charger AC\">
+      <spinner description=\"Default: AC:1200mA\" name=\"Profile Charger AC\" action=\"chargeaccurrent chargeaccurrentpredef\">
+             <spinnerItem name=\"AC:1100mA\" value=\"0\"/>
+             <spinnerItem name=\"AC:1200mA\" value=\"1\"/>
+             <spinnerItem name=\"AC:1300mA\" value=\"2\"/>
+      </spinner>
+    </settingsPane>
+    <settingsPane description=\"SSelect the profile you want, default is to 900mA, battery charger faster, it is not advisable  plus of 900mA\" name=\"Carga USB\">
+      <spinner description=\"Default: USB:900mA\" name=\"Profile Charger USB\" action=\"chargeusbcurrent chargeusbcurrentpredef\">
+             <spinnerItem name=\"USB:475mA\" value=\"0\"/>
+             <spinnerItem name=\"USB:700mA\" value=\"1\"/>
+             <spinnerItem name=\"USB:900mA\" value=\"2\"/>
+             <spinnerItem name=\"USB:1000mA\" value=\"3\"/>
+      </spinner>
+
+      <checkbox description=\"For those with unstable load problems if you do not load more than 475mA can try enabling this option.\" 
+                name=\"Ignore charge unstable\" 
+                action=\"generic01 /sys/kernel/charge_levels/ignore_unstable_power\"
+                label=\"Enable Ignore charge unstable\"/>
+
+      <checkbox description=\"For those with charge problems, they can also try enabling this option.\" 
+                name=\"Ignore safe margins\" 
+                action=\"generic01 /sys/kernel/charge_levels/ignore_safety_margin\"
+                label=\"Enable Ignore safe margins\"/>
+
+    </settingsPane>
+" >> $XML
+echo '
+  </settingsTab>
+
+  <settingsTab name="I/O">
+    <settingsPane description="Select the I/O schedulers that best suits your needs, by default uses ROW."  
+                  name="I/O schedulers">' >> $XML
+
+echo "
+      <spinner name=\"Actual internal storage scheduler\"
+               action=\"iosched internal /sys/block/mmcblk0/queue/scheduler\">" >> $XML
+
+for IOSCHED in `cat /sys/block/mmcblk0/queue/scheduler | sed -e 's/\]//;s/\[//'`; do
+  echo "
+        <spinnerItem name=\"$IOSCHED\" value=\"$IOSCHED\"/>" >> $XML
+done
+
+echo '
+      </spinner>' >> $XML
+
+echo "
+      <spinner name=\"Actual SD card scheduler\"
+               action=\"iosched sd /sys/block/mmcblk1/queue/scheduler\">" >> $XML
+
+for IOSCHED in `cat /sys/block/mmcblk1/queue/scheduler | sed -e 's/\]//;s/\[//'`; do
+  echo "
+        <spinnerItem name=\"$IOSCHED\" value=\"$IOSCHED\"/>" >> $XML
+done
+
+echo '
+      </spinner>
+    </settingsPane>
+
+    <settingsPane name="I/O read-ahead" 
+                  description="Increase the speed of reading and writing.">
+
+      <seekBar  description="The value of reading and writing to the internal phone memory." 
+                name="Internal storage read-ahead" 
+                action="generictagforce internal /sys/block/mmcblk0/queue/read_ahead_kb"
+                unit="kB" min="128" reversed="false" step="128" max="2048"/>
+
+      <seekBar  description="The value of reading and writing to the external memory (SD card)." 
+                name="SD card read-ahead" 
+                action="generictagforce sd /sys/block/mmcblk1/queue/read_ahead_kb"
+                unit="kB" min="128" reversed="false" step="128" max="2048"/>
+
+    </settingsPane>
+
+	<settingsPane description="TCP Control" name="TCP Control">
+
+	<spinner description="options to change the unit of TCP congestion" name="TCP Congestion Control" action="generic /proc/sys/net/ipv4/tcp_congestion_control">
+			<spinnerItem name="westwood" value="westwood"/>
+			<spinnerItem name="cubic" value="cubic"/>
+			<spinnerItem name="reno" value="reno"/>
+			<spinnerItem name="bic" value="bic"/>
+			<spinnerItem name="htcp" value="htcp"/>
+	</spinner>
+
+	</settingsPane>
+
+    <settingsPane name="ZRAM" 
+                  description=" ">
+
+      <seekBar  description="From here you can increase or decrease the size of Zram. Default: 90 x 4 = 360 Mb"
+                name="ZRAM" 
+                action="zram"
+                unit=" mB x 4" min="0" reversed="false" step="5" max="500"/>
+
+    </settingsPane>
+
+    <settingsPane name="ZSWAP" 
+                  description=" ">
+
+      <seekBar  description="From here you can increase or decrease the size of Zswap. Default: 64 Mb"
+                name="ZSWAP"
+                action="zswap"
+                unit=" mB" min="0" reversed="false" step="5" max="1025"/>
+
+    </settingsPane>
+
+    <settingsPane name="Swappiness" 
+                  description="A low value means that the kernel will try to avoid sharing the minimum  possible, a higher valué will attempt to use the swap space of a more aggressive mode. A value of 0 will disable sharing memory (swap o zram), Maximum (Normal) is 100, possibility to 200.">  
+
+      <seekBar  description="Default: 90." 
+                name="Virtual machine swappiness" 
+                action="generic /proc/sys/vm/swappiness"
+                unit="%" min="0" reversed="false" step="5" max="200"/>
+
+    </settingsPane>
+
+    <settingsPane name="vfs cache pressure" 
+                  description="This variable controls the tendency of the kernel to reclaim the memory which is used for caching of VFS caches, versus pagecache and swap. Increasing this value increases the rate at which VFS caches are reclaimed.">   
+
+      <seekBar  description="Default: 100." 
+                name="vfs cache pressure" 
+                action="generic /proc/sys/vm/vfs_cache_pressure"
+                unit="%" min="0" reversed="false" step="5" max="500"/>
+
+    </settingsPane>
+
+    <settingsPane name="Min Free kbytes"
+                  description="Modifying the value (in bytes) of /proc/sys/vm/min_free_kbytes, what we do is redefine the memory space available to the kernel when the need for the system, open an app, etc.. This is used to force the Linux VM to keep a minimum number
+of kilobytes free.. Recommended values: 1448k, 2048k, 2896k, 3642k, 4096k, 5792k, 8192k, 11584k, 12288k, 12360k, 16284k y 18360k. This will influence system performance">
+
+      <seekBar  description="The minimum power Selection is 1448k and max 18360k. Default: 8192 kbytes."
+                name="Min Free kbytes"
+                action="generic /proc/sys/vm/min_free_kbytes"
+                unit="kB" min="1448" reversed="false" step="1" max="18360"/>
+
+    </settingsPane>
+
+    <settingsPane name="Dirty Writeback Centisecs"
+                  description="This tells the kernel every few seconds should write the data to disk. The default is 500, equivalent to 0,5 seconds. This parameter can influence a lot in performance and battery drain, choose with care.">
+     
+      <seekBar  description="Default: 500."
+                name="Dirty Writeback Centisecs"
+                action="generic /proc/sys/vm/dirty_writeback_centisecs"
+                unit="%" min="0" reversed="false" step="1" max="6000"/>
+
+    </settingsPane>
+
+    <settingsPane name="Dirty Expire Centisecs" 
+                  description="dirty_expire_centisecs define when the data in memory that are marked as dirty are old enough to be candidates for writing. The default is 200. This parameter can influence a lot in performance and battery drain, choose with care.">
+     
+      <seekBar  description="Default: 200." 
+                name="Dirty Expire Centisecs" 
+                action="generic /proc/sys/vm/dirty_expire_centisecs"
+                unit="%" min="0" reversed="false" step="1" max="6000"/>
+
+    </settingsPane>
+
+    <settingsPane name="Dynamic FSync"
+                  description="fsync() It serves as a flush / commit on write buffer when doing I/O, writes to storage. A buffer with data stored and writes regularly on the storage device. Disabling this will no longer do this and write the data directly.">
+
+      <checkbox description="Dynamic FSync disables file write synchronosity during screen-on, and re-enables it on screen-off." 
+                name="Enable dynamic FSync" 
+                action="generic01 /sys/kernel/dyn_fsync/Dyn_fsync_active"
+                label="Enable dynamic FSync"/>
+
+    </settingsPane>
+  </settingsTab>
+    <settingsTab name="LED">
+   
+    <settingsPane description="Control the way the LED blinks"
+		  name="Blinking effect">
+
+    <checkbox  description="If disabled, ignores the below detention times and the blinking waveform has no slopes, i.e. it is square" 
+                name="LED Fading" 
+                action="generic01 /sys/class/sec/led/led_fade"
+                label="Enable LED-Fading"/>
+
+    <seekBar  description="LED Blinking Speed" 
+		name="LED Speed" 
+                action="generic /sys/class/sec/led/led_speed" 
+                unit="" min="0" reversed="false" step="1" max="15"/>
+    
+    <seekBar  description="La intensidad del LED." 
+		name="LED Intensity" 
+		action="generic /sys/class/sec/led/led_intensity" 
+		unit="" min="0" reversed="false" step="1" max="255"/>    
+    
+    </settingsPane>
+  </settingsTab>
+
+   <settingsTab name="Screen">
+<settingsPane description="Other screen related settings" name="Other Settings">
+      <checkbox description="Enable/Disabled Touchboost." 
+                name="TouchBoost" 
+                action="generic01 /sys/class/misc/touchboost_switch/touchboost_switch"
+                label="TouchBoost"/>
+        <spinner description="Set CPU freq boost level when you touch the screen. Lower levels will help with the battery with the cost of UI lags. Default: 600 MHz" name="Touch Boost Level" action="generic /sys/class/misc/touchboost_switch/touchboost_freq">
+             <spinnerItem name="1200MHz" value="1200000"/> 
+             <spinnerItem name="1000MHz" value="1000000"/> 
+             <spinnerItem name="900MHz" value="900000"/> 
+             <spinnerItem name="800MHz" value="800000"/> 
+             <spinnerItem name="700MHz" value="700000"/> 
+             <spinnerItem name="600MHz" value="600000"/> 
+             <spinnerItem name="500MHz" value="500000"/> 
+             <spinnerItem name="400MHz" value="400000"/> 
+             <spinnerItem name="200MHz" value="200000"/> 
+       </spinner>
+</settingsPane>
+     <settingsPane description="Touch-to-Wake Opciones" name="Touch-to-Wake Settings">
+       <spinner description="Touch-to-Wake" name="Touch-to-Wake" action="touch2wake touchwake">
+             <spinnerItem name="Disabled" value="0"/> 
+             <spinnerItem name="Enable" value="1"/> 
+        </spinner>
+      <seekBar description="Touch-To-Wake Delay in seconds (Default is 5ms). Setting Delay to 0 makes Touch-to-Wake permanently active !" 
+		name="Touch-To-Wake Delay" action="touch2wake touchwakedelay" unit=" sec" min="0" reversed="false" step="1" max="60"/>
+
+       <spinner description="Knock-On" name="Knock-On" action="touch2wake knockon">
+             <spinnerItem name="Desactivado" value="0"/> 
+             <spinnerItem name="Activado" value="1"/> 
+        </spinner>        
+        <seekBar description="Knock-On Delay in seconds (Default is 5ms)." 
+		name="Knock-On Delay" action="touch2wake knockondelay" unit=" msec" min="0" reversed="false" step="50" max="1000"/>
+   </settingsPane>
+
+     <settingsPane name="Mdnie Hijack" 
+                    description="whether this profile is active, you must deactivate the profile Sharpen (stock). The two at the same time you can not have assets."> 
+  
+        <checkbox description="Default: Deactivated"
+                  name="Hijack" 
+                  action="generic01 /sys/class/mdnie/mdnie/hijack"
+                  label="Activar Hijack"/>
+  
+     </settingsPane>
+     <settingsPane name="Mdnie Sharpen (stock)" 
+                    description="whether this profile is active, you must deactivate the profile Hijack. The two at the same time you can not have assets."> 
+  
+        <checkbox description="Default: Activated"
+                  name="Sharpen" 
+                  action="generic01 /sys/class/mdnie/mdnie/sharpen"
+                  label="Enable Sharpen"/>
+  
+     </settingsPane>
+    <settingsPane description="Select the profile that best suits your view" name="MDNIE HIJACK">
+      <spinner description="Default: Natural" name="MDNIE" action="mdnie mdniepredef">
+             <spinnerItem name="Natural" value="0"/> 
+             <spinnerItem name="Standard" value="1"/> 
+      </spinner>
+    </settingsPane>
+
+   <settingsPane description="mobile Digital Natural Image engine control. Samsungs hardware image post-processor controls virtually any image manipulation. All control master switches, if left as delta controls, will negate the sequence setting if checked. Master sequence has SCR and CS enabled by default."
+                name="Global controls">
+
+
+      <checkbox  description="Register intercept acts like a hook and will enable catching scenario settings and modifying them through delta controls. If a scenario does not have a setting (register) in its base sequence, then it cannot be modified by the hook."
+                name="Register intercept" 
+                action="generic01 /sys/class/misc/mdnie/hook_intercept"
+                label="Enable register hook"/>
+
+
+      <checkbox  description="Enabling the master sequence will disable and ignore Samsungs profiles and scenarios, the ROM controls will be disabled."
+                name="Master sequence" 
+                action="generic01 /sys/class/misc/mdnie/sequence_intercept"
+                label="Enable master sequence"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="Uses mDNIe to bypass the backlight driver brightness and decrease brightness by reducing luminance on the the channel RGB values. It allows to reduce brightness beyond the stock minimum."
+                name="Digital screen brightness">
+
+
+       <seekBar  description="The amount of luminance to be shaved off from the colour channel components."
+                name="Brightness reduction"
+                action="generic /sys/class/misc/mdnie/brightness_reduction"
+                unit="" min="0" reversed="false" step="1" max="128"/>
+
+
+      <seekBar  description="The stock backlight driver ignores brightness values below 20 (0-255) and values below that point do not have any effect on brightness. The takeover point is the point in the brightness curve where the digital brightness reduction takes effect. The brightness reduction is weighted linearly from full configured value to zero on the range of zero brigtness to the takeover point. If the takeover point is beyond 20, then both hardware and digital brightness reduction can take place. This can help with having a less abrupt brightness curve caused by the digital reduction."
+                name="Takeover point"
+                action="generic /sys/class/misc/mdnie/brightness_takeover_point"
+                unit="" min="0" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Positive delta to be applied on top system brightness. Used only for the digital reduction logic during stock ROM auto-brightness activation, can be used to brighten back up the reduction value by shifting the interpreted brightness value without sacrificing minimum brightness in manual mode."
+                name="Entrada Auto-brightness input delta"
+                action="generic /sys/class/misc/mdnie/brightness_input_delta"
+                unit="" min="0" reversed="false" step="1" max="64"/>
+
+    </settingsPane>
+
+    <settingsPane description="Work exclusively on the stock video player."
+                name="DNR and HDR control">
+
+      <checkbox  description="" 
+                name="Toggle digital noise reduction"
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_digital_noise_reduction"
+                label="Toggle digital noise reduction for video playback"/>
+
+      <checkbox  description="" 
+                name="Toggle high dynamic range"
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_high_dynamic_range"
+                label="Toggle HDR for video playback"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+                name="Digital edge enhancement control">
+
+      <checkbox  description="" 
+                name="The master digital switch margin improves UI" 
+                action="maskvalue 1 /sys/class/misc/mdnie/hook_control/s_edge_enhancement"
+                label="Switch to enhance edges for UI"/>
+
+      <checkbox  description="" 
+                name="Main switch enhances the edges of the Digital Video" 
+                action="maskvalue 2 /sys/class/misc/mdnie/hook_control/s_edge_enhancement"
+                label="Toggle edge enhancement for video playback"/>
+
+      <seekBar  description=""
+                name="Amount"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_e"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+      <seekBar  description=""
+                name="Radius"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_f"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+      <seekBar  description=""
+                name="Threshold"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/de_positive_f"
+                unit="" min="-128" reversed="false" step="1" max="128"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="Chroma saturation works in the HSL colour space, modifying saturation will dilute the hue with white or darken with black. Variations in chroma are achieved by adding different amounts of a neutral gray of the same value as the color you want to alter."
+                name="Chroma saturation control">
+
+
+      <checkbox  description="Factory settings override the controls." 
+                name="Chroma saturation factory settings" 
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_factory_chroma_saturation"
+                label="Toggle factory settings"/>
+
+      <seekBar  description="Saturation weight/multipliers for RGB/YCM chroma gains"
+                name="Chroma saturation weight"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_weight"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Red gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_red"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Green gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_green"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Blue gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_blue"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Yellow gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_yellow"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Cyan gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_cyan"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+      <seekBar  description=""
+                name="Magenta gain"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/cs_magenta"
+                unit="" min="-16" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+
+    <settingsPane description="Changes white colour temperature"
+                name="White colour temperature control">
+
+      <checkbox  description="" 
+                name="Colour temperature master switch" 
+                action="generic01 /sys/class/misc/mdnie/hook_control/s_MCM"
+                label="Toggle colour temperature control"/>
+
+
+      <seekBar  description="Starting point is 6500K."
+                name="Colour temperature"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/mcm_temperature"
+                unit="00K" min="-20" reversed="false" step="1" max="20"/>
+
+
+    </settingsPane>
+
+    <settingsPane description="The controls is divided in 8 channels, RGB, YCM, W and K. SCR controls are RGB modifiers on each of the controls altering the primary luminosities on that channel."
+		  name="White colour balance">
+
+      <seekBar  description="Red in white"
+		name="Red"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_red"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+      <seekBar  description="Green in white"
+		name="Green"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_green"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+      <seekBar  description="Blue in white"
+		name="Blue"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_white_blue"
+                unit="" min="-64" reversed="false" step="1" max="20"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+		  name="Primary (RGB) colour channels addends">
+
+      <seekBar  description="Red in red channel"
+		name="Red in red"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Green in red channel"
+		name="Green in red"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Blue in red channel"
+		name="Blue in red"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_red_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Red in green channel"
+		name="Red in green"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Green in green channel"
+		name="Green in green"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Blue in green channel"
+		name="Blue in green"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_green_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Red in blue channel"
+		name="Red in blue"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Green in blue channel"
+		name="Green in blue"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Blue in blue channel"
+		name="Blue in blue"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_blue_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+
+    <settingsPane description=""
+		  name="Secondary (YCM) colour channels addends">
+
+      <seekBar  description="Red in yellow channel"
+		name="Red in yellow"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Green in yellow channel"
+		name="Green in yellow"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Blue in yellow channel"
+		name="Blue in yellow"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_yellow_blue"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Red in cyan channel"
+		name="Red in cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_red"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Green in cyan channel"
+		name="Green in cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_green"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Blue in cyan channel"
+		name="Blue in cyan"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_cyan_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Red in magenta channel"
+		name="Red in magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_red"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+      <seekBar  description="Green in magenta channel"
+		name="Green in magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_green"
+                unit="" min="-32" reversed="false" step="1" max="64"/>
+
+      <seekBar  description="Blue in magenta channel"
+		name="Blue in magenta"
+                action="generic-offset B /sys/class/misc/mdnie/hook_control/scr_magenta_blue"
+                unit="" min="-64" reversed="false" step="1" max="32"/>
+
+    </settingsPane>
+  </settingsTab>
+</settingsRoot>' >> $XML
+
+chmod 777 $XML
