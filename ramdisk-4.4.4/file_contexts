@@ -515,7 +515,8 @@
 /dev/mali* 	u:object_r:graphics_device:s0
 /dev/s3c-mfc 	u:object_r:graphics_device:s0
 /dev/ump 	u:object_r:ump_device:s0
-#line 1 "vendor/samsung/common/sepolicy/slsi_common/carrier_kor/file_contexts"
+#line 1 "vendor/samsung/common/sepolicy/slsi_common/Exynos4/t03g_common/file_contexts"
+/dev/gsm.*			u:object_r:mif_device:s0
 
 /system/bin/dmbserver   u:object_r:dmb_exec:s0
 /dev/tdmb               u:object_r:tdmb_device:s0

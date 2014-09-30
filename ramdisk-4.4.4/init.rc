@@ -565,7 +565,7 @@ on boot
     chown system radio /sys/class/sec/sec_touchkey/touch_sensitivity
     chown system radio /sys/class/sec/sec_touchkey/touchkey_threshold
     chown system system /sys/devices/virtual/sec/sec_touchkey/brightness
-
+    
 # Permissions for touch
     chown system radio /sys/class/sec/tsp/cmd
 

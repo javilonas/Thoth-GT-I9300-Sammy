@@ -1,7 +1,0 @@
-#!/sbin/busybox sh
-
-if [[ $(getprop persist.sys.language) == "es" ]]; then
-	source /res/tpowercc/tpowercc.xml.generate.lang_es
-else
-	source /res/tpowercc/tpowercc.xml.generate.lang_en
-fi
