@@ -64,11 +64,8 @@ ZRM=`ls -d /sys/block/zram*`
 for j in $LOOP $RAM $MMC $ZRM
 do 
 echo "0" > $j/queue/rotational
-echo "2048" > $j/queue/read_ahead_kb; 
 
 done
-
-echo "2048" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
 
 # Turn off debugging for certain modules
 echo "0" > /sys/module/wakelock/parameters/debug_mask

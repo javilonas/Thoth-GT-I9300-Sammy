@@ -60,6 +60,7 @@ fi
 
 # Remontar y Optimizar particiones con EXT4
 /res/ext/optimi_remount.sh
+/sbin/busybox sync
 
 # Iniciar Tweaks Lonas_KL
 /res/ext/tweaks.sh
@@ -94,19 +95,16 @@ done
 # Iniciar Liberar Memoria
 /res/ext/libera_ram.sh &
 /sbin/busybox renice 19 `pidof libera_ram.sh`
-
-/sbin/busybox sleep 3
+/sbin/busybox sleep 1
 
 /res/ext/smoothsystem.sh &
 /sbin/busybox renice 19 `pidof smoothsystem.sh`
-
-/sbin/busybox sleep 3
+/sbin/busybox sleep 1
 
 /sbin/ext/killing.sh &
+/sbin/busybox sleep 1
 
-/sbin/busybox sleep 2
-
-sync
+/sbin/busybox sync
 
 /sbin/busybox mount -t rootfs -o remount,ro rootfs
 /sbin/busybox mount -o remount,ro -t ext4 $SYSTEM_DEVICE /system

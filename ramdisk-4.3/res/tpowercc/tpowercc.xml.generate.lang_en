@@ -250,7 +250,7 @@ echo '
 
 echo "
     <settingsPane description=\"Select the profile you want to use for the memory\" name=\"LMK LowMemoryKiller\">
-      <spinner description=\"Default: Super Moderate\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
+      <spinner description=\"Default: Moderate\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
              <spinnerItem name=\"LMK: Normal\" value=\"0\"/>
              <spinnerItem name=\"LMK: Moderate\" value=\"1\"/>
              <spinnerItem name=\"LMK: Super Moderate\" value=\"2\"/>
@@ -359,27 +359,17 @@ echo '
     <settingsPane name="ZRAM" 
                   description=" ">
 
-      <seekBar  description="From here you can increase or decrease the size of Zram. Default: 90 x 4 = 360 Mb"
-                name="ZRAM" 
+      <seekBar  description="Desde aquí podrá aumentar o disminuir el tamaño de Zram. Por defecto: 128 mB x 4 devices = 512 Mb"
+                name="ZRAM"
                 action="zram"
                 unit=" mB x 4" min="0" reversed="false" step="5" max="500"/>
-
-    </settingsPane>
-
-    <settingsPane name="ZSWAP" 
-                  description=" ">
-
-      <seekBar  description="From here you can increase or decrease the size of Zswap. Default: 64 Mb"
-                name="ZSWAP"
-                action="zswap"
-                unit=" mB" min="0" reversed="false" step="5" max="1025"/>
 
     </settingsPane>
 
     <settingsPane name="Swappiness" 
                   description="A low value means that the kernel will try to avoid sharing the minimum  possible, a higher valué will attempt to use the swap space of a more aggressive mode. A value of 0 will disable sharing memory (swap o zram), Maximum (Normal) is 100, possibility to 200.">  
 
-      <seekBar  description="Default: 90." 
+      <seekBar  description="Default: 80." 
                 name="Virtual machine swappiness" 
                 action="generic /proc/sys/vm/swappiness"
                 unit="%" min="0" reversed="false" step="5" max="200"/>

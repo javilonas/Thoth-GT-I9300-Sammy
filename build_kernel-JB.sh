@@ -22,7 +22,7 @@ TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabi
 ROOTFS_PATH="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy/ramdisk-4.3"
 RAMFS_TMP="/home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3"
 
-export KERNEL_VERSION="Thoth-5.2"
+export KERNEL_VERSION="Thoth-5.5"
 export VERSION_KL="GT-I9300-SAMMY-4.3"
 export REVISION="RTM"
 
