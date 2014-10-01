@@ -180,9 +180,6 @@ on boot
     setprop ro.product.device smdk4x12
     # setprop ro.radio.noril yes
     setprop ro.securestorage.knox false
-
-# SSWAP
-    write /proc/sys/vm/swappiness 130
 	
 # mobicore
     mkdir /data/app/mcRegistry 0775 system system

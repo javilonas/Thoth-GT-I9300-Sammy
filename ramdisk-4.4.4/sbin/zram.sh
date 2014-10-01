@@ -4,7 +4,22 @@
 #
 
 # Tamaño Zram
-zram_size=128
+zram_size=512
+cpuinfo_min_freq=600000
+
+echo 0 > /proc/sys/vm/swappiness
+
+chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+echo $cpuinfo_min_freq > /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+chmod 0644 /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_min_freq
+
+chmod 777 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+echo $scaling_min_freq > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+chmod 0644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+
+chmod 777 /sys/power/cpufreq_min_limit
+echo $cpufreq_min_limit > /sys/power/cpufreq_min_limit
+chmod 0644 /sys/power/cpufreq_min_limit
 
 # ZRAM
 if [ $zram_size -gt 0 ]; then

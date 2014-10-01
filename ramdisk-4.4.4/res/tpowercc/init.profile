@@ -1,5 +1,4 @@
-swappiness=80
-zram_size=128
+swappiness=90
 hijack=off
 sharpen=on
 led_fade=on
