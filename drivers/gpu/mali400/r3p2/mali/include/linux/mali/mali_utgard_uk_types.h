@@ -724,6 +724,19 @@ typedef struct
  */
 #define _MALI_API_VERSION 29
 
+/**
+ * HACK: We must keep API version at the same level as binary blob
+ * Damn you, Samsung!
+ */
+#undef _MALI_API_VERSION
+#define _MALI_API_VERSION 26
+
+/**
+ * HACK: Support 4.3 - 4.4.x
+ */
+#undef _MALI_API_VERSION
+#define _MALI_API_VERSION 23
+
 #define _MALI_UK_API_VERSION _MAKE_VERSION_ID(_MALI_API_VERSION)
 
 /**
