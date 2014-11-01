@@ -1,4 +1,6 @@
 swappiness=90
+scaling_max_freq=1400000
+scaling_min_freq=200000
 hijack=off
 sharpen=on
 led_fade=on
