@@ -68,7 +68,6 @@ on init
     # Vibetonz
     export VIBE_PIPE_PATH /dev/pipes
     mkdir /dev/pipes 0771 system system
-    ffu
 
 on post-fs-data
     # we will remap this as /storage/sdcard with the sdcard fuse tool
@@ -179,8 +178,8 @@ on boot
     setprop ro.build.product smdk4x12
     setprop ro.product.device smdk4x12
     # setprop ro.radio.noril yes
-    setprop ro.securestorage.knox false
-	
+    # setprop ro.securestorage.knox true
+
 # mobicore
     mkdir /data/app/mcRegistry 0775 system system
     chmod 0700 /dev/mobicore

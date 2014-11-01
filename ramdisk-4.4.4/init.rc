@@ -244,10 +244,6 @@ on post-fs-data
 
     write /proc/apanic_console 1
 
-    #SideSync
-    chown system system /dev/android_ssusbcon
-    chmod 0660 /dev/android_ssusbcon
-
     # create basic filesystem structure
     mkdir /data/misc 01771 system misc
     mkdir /data/misc/adb 02750 system shell
@@ -677,9 +673,6 @@ on boot
     chown system system /sys/class/sec/led/led_br_lev
     chown system system /sys/class/sec/led/led_lowpower
 
-# Mobicore
-    mkdir /data/app/mcRegistry 0775 system system
-
 # Vibetonz
     chmod 0660 /dev/tspdrv
     chown system system /dev/tspdrv
@@ -976,7 +969,7 @@ on property:init.svc.bootanim=stopped
     restorecon /data/media/obb
     start auditd
     start freshsebool
-    selinux_restore -b
+    selinux_restore -e
 
 # SE Android sebool
 service freshsebool /system/bin/freshsebool
@@ -984,12 +977,6 @@ service freshsebool /system/bin/freshsebool
     user root
     disabled
     oneshot
-
-service SIDESYNC_service /system/bin/ss_conn_daemon
-    class main
-    socket ss_conn_daemon stream 0666 system system
-    user system 
-    group inet net_raw
 
 # SAMSUNG DRS Service
 service drsd /system/bin/drsd
@@ -1009,15 +996,6 @@ service charon /system/bin/charon
 on property:init.svc.media=restarting
     check_icd
     start icd
-
-# PPPOE SUPPORT
-    setprop ro.config.pppoe_enable 1
-
-service pppoe /system/bin/pppoewrapper
-    class main
-    disabled
-    oneshot
-# PPPOE SUPPORT
 
 service lonas-init /sbin/lonas-init.sh
     class core

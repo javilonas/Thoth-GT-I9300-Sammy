@@ -17,12 +17,12 @@ if [ "${1}" != "" ];then
   export KERNELDIR=`readlink -f ${1}`
 fi
 
-TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.2-2014.09/bin/arm-cortex_a9-linux-gnueabihf-"
-TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.1-2014.07/bin"
+TOOLCHAIN="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.2-2014.10/bin/arm-cortex_a9-linux-gnueabihf-"
+TOOLCHAIN_PATCH="/home/lonas/Kernel_Lonas/toolchains/arm-cortex_a9-linux-gnueabihf-linaro_4.9.2-2014.10/bin"
 ROOTFS_PATH="/home/lonas/Kernel_Lonas/Thoth-GT-I9300-Sammy/ramdisk-4.3"
 RAMFS_TMP="/home/lonas/Kernel_Lonas/tmp/ramfs-source-sgs3"
 
-export KERNEL_VERSION="Thoth-5.5"
+export KERNEL_VERSION="Thoth-5.6"
 export VERSION_KL="GT-I9300-SAMMY-4.3"
 export REVISION="RTM"
 
