@@ -48,6 +48,7 @@ chmod 750 $ROOTFS_PATH/sbin/*
 chmod 755 $ROOTFS_PATH/res/ext/99SuperSUDaemon
 chmod 755 $ROOTFS_PATH/sys
 chmod 755 $ROOTFS_PATH/system
+chmod 750 $ROOTFS_PATH/lpm.rc
 
 find . -type f -name '*.h' -exec chmod 644 {} \;
 find . -type f -name '*.c' -exec chmod 644 {} \;

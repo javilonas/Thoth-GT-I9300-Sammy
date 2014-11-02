@@ -380,7 +380,7 @@ echo '
                   description="Modifying the value (in bytes) of /proc/sys/vm/min_free_kbytes, what we do is redefine the memory space available to the kernel when the need for the system, open an app, etc.. This is used to force the Linux VM to keep a minimum number
 of kilobytes free.. Recommended values: 1448k, 2048k, 2896k, 3642k, 4096k, 5792k, 8192k, 11584k, 12288k, 12360k, 16284k y 18360k. This will influence system performance">
 
-      <seekBar  description="The minimum power Selection is 1448k and max 18360k. Default: 12288 kbytes."
+      <seekBar  description="The minimum power Selection is 1448k and max 18360k. Default: 3642 kbytes."
                 name="Min Free kbytes"
                 action="generic /proc/sys/vm/min_free_kbytes"
                 unit="kB" min="1448" reversed="false" step="1" max="18360"/>
