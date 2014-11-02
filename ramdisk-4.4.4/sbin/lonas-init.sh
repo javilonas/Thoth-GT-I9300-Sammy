@@ -93,16 +93,16 @@ done
 /res/ext/usb_mtp.sh
 
 # Iniciar Liberar Memoria
-/res/ext/libera_ram.sh &
-/sbin/busybox renice 19 `pidof libera_ram.sh`
-/sbin/busybox sleep 1
+# /res/ext/libera_ram.sh &
+# /sbin/busybox renice 19 `pidof libera_ram.sh`
+# /sbin/busybox sleep 1
 
-/res/ext/smoothsystem.sh &
-/sbin/busybox renice 19 `pidof smoothsystem.sh`
-/sbin/busybox sleep 1
+# /res/ext/smoothsystem.sh &
+# /sbin/busybox renice 19 `pidof smoothsystem.sh`
+# /sbin/busybox sleep 1
 
-/sbin/ext/killing.sh &
-/sbin/busybox sleep 1
+# /sbin/ext/killing.sh &
+# /sbin/busybox sleep 1
 
 /sbin/busybox sync
 
