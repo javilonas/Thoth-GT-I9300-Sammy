@@ -96,7 +96,7 @@ echo '
 
 echo "
     <settingsPane description=\"Select the profile that best suits your terminal\" name=\"GPU threshold\">
-      <spinner description=\"Default: GPU threshold: Battsave\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
+      <spinner description=\"Default: GPU threshold: Normal (Stock)\" name=\"GPU threshold\" action=\"gputhreshold gputhresholdpredef\">
              <spinnerItem name=\"GPU Threshold: ExtraBattsave\" value=\"0\"/>
              <spinnerItem name=\"GPU Threshold: Moderado\" value=\"1\"/>
              <spinnerItem name=\"GPU Threshold: Battsave\" value=\"2\"/>
@@ -250,7 +250,7 @@ echo '
 
 echo "
     <settingsPane description=\"Select the profile you want to use for the memory\" name=\"LMK LowMemoryKiller\">
-      <spinner description=\"Default: Moderate\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
+      <spinner description=\"Default: Normal\" name=\"Perfil LowMemoryKiller\" action=\"minfree minfreepredef\">
              <spinnerItem name=\"LMK: Normal\" value=\"0\"/>
              <spinnerItem name=\"LMK: Moderate\" value=\"1\"/>
              <spinnerItem name=\"LMK: Super Moderate\" value=\"2\"/>
@@ -390,7 +390,7 @@ of kilobytes free.. Recommended values: 1448k, 2048k, 2896k, 3642k, 4096k, 5792k
     <settingsPane name="Dirty Writeback Centisecs"
                   description="This tells the kernel every few seconds should write the data to disk. The default is 500, equivalent to 0,5 seconds. This parameter can influence a lot in performance and battery drain, choose with care.">
      
-      <seekBar  description="Default: 500."
+      <seekBar  description="Default: 400."
                 name="Dirty Writeback Centisecs"
                 action="generic /proc/sys/vm/dirty_writeback_centisecs"
                 unit="%" min="0" reversed="false" step="1" max="6000"/>
