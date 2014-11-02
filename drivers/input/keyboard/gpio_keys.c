@@ -734,7 +734,7 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 
 #endif
 
-		if (suspended && ((button->code == KEY_POWER) || (button->code == HOME_KEY_VAL)) && state)
+		if (suspended && ((button->code == KEY_POWER)) && state)
 			queue_work(gpio_boost_queue, &gpio_boost_work);
 
 		input_event(input, type, button->code, !!state);
