@@ -722,7 +722,7 @@ static struct notifier_block exynos_cpufreq_policy_notifier = {
 
 static int exynos_cpufreq_cpu_init(struct cpufreq_policy *policy)
 {
-	int ret;
+	int retval;
 
 	policy->cur = policy->min = policy->max = exynos_getspeed(policy->cpu);
 
@@ -744,25 +744,14 @@ static int exynos_cpufreq_cpu_init(struct cpufreq_policy *policy)
 		cpumask_setall(policy->cpus);
 	}
 
-	ret = cpufreq_frequency_table_cpuinfo(policy, exynos_info->freq_table);
-	if (ret)
-		return ret;
+	retval = cpufreq_frequency_table_cpuinfo(policy, exynos_info->freq_table);
 
-	cpufreq_frequency_table_get_attr(exynos_info->freq_table, policy->cpu);
+	/* Keep stock frq. as default startup frq. */
+	policy->max = 1400000;
+	policy->min = 200000;
 
-	return 0;
+	return retval;
 }
-
-static int exynos_cpufreq_cpu_exit(struct cpufreq_policy *policy)
-{
-	cpufreq_frequency_table_put_attr(policy->cpu);
-	return 0;
-}
-
-static struct freq_attr *exynos_cpufreq_attr[] = {
-	&cpufreq_freq_attr_scaling_available_freqs,
-	NULL,
-};
 
 static int exynos_cpufreq_reboot_notifier_call(struct notifier_block *this,
 				   unsigned long code, void *_cmd)
@@ -792,7 +781,6 @@ static struct cpufreq_driver exynos_driver = {
 	.target		= exynos_target,
 	.get		= exynos_getspeed,
 	.init		= exynos_cpufreq_cpu_init,
-	.exit		= exynos_cpufreq_cpu_exit,
 	.name		= "exynos_cpufreq",
 	.attr		= exynos_cpufreq_attr,
 #ifdef CONFIG_PM
