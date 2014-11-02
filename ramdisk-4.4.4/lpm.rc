@@ -26,7 +26,7 @@ on init
 on early-fs
 	insmod /lib/modules/vibrator.ko
  
-    mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime
+    #mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime
 	mkdir /data/log 0777
 
 	chmod 0666 /dev/log/radio
@@ -56,7 +56,7 @@ service ueventd /sbin/ueventd
 service console /system/bin/sh
     console
 
-service playlpm /system/bin/playlpm
+service playlpm /system/bin/lpm
     user root
 
 service immvibed /system/bin/immvibed 
