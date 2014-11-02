@@ -17,22 +17,25 @@
 #include <linux/sched.h>
 #include <linux/pm.h>
 #include <linux/slab.h>
+#include <linux/syscalls.h>
 #include <linux/sysctl.h>
 #include <linux/proc_fs.h>
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 #include <linux/input.h>
 #include <linux/gpio_keys.h>
+#include <linux/wakelock.h>
 #include <linux/workqueue.h>
 #include <linux/gpio.h>
 #include <linux/irqdesc.h>
 #ifdef CONFIG_FAST_BOOT
 #include <linux/fake_shut_down.h>
-#include <linux/wakelock.h>
 #endif
 #ifdef CONFIG_TOUCH_WAKE
 #include <linux/touch_wake.h>
 #endif
+#include <../kernel/power/power.h>
+#include <mach/cpufreq.h>
 
 extern struct class *sec_class;
 
@@ -68,6 +71,30 @@ struct gpio_keys_drvdata {
 	struct gpio_button_data data[0];
 	/* WARNING: this area can be expanded. Do NOT add any member! */
 };
+
+static void sync_system(struct work_struct *work);
+static DECLARE_WORK(sync_system_work, sync_system);
+
+static void gpio_boost(struct work_struct *work);
+static DECLARE_WORK(gpio_boost_work, gpio_boost);
+struct workqueue_struct *gpio_boost_queue;
+struct delayed_work boost_off;
+
+static bool suspended = false; // test
+
+static void gpio_boost(struct work_struct *work)
+{
+	pr_info("%s: locking cpufreq for late_resume boost\n", __func__);
+	exynos_cpufreq_lock(DVFS_LOCK_ID_LATE_RESUME, 1);
+	schedule_delayed_work(&boost_off, msecs_to_jiffies(2500));
+}
+
+static void sync_system(struct work_struct *work)
+{
+	pr_info("%s +\n", __func__);
+	sys_sync();
+	pr_info("%s -\n", __func__);
+}
 
 /*
  * SYSFS interface for enabling/disabling keys and switches:
@@ -706,11 +733,21 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 		}
 
 #endif
+
+		if (suspended && ((button->code == KEY_POWER) || (button->code == HOME_KEY_VAL)) && state)
+			queue_work(gpio_boost_queue, &gpio_boost_work);
+
 		input_event(input, type, button->code, !!state);
 		input_sync(input);
 
-		if (button->code == KEY_POWER)
+		if (button->code == KEY_POWER) {
 			printk(KERN_DEBUG"[keys]PWR %d\n", !!state);
+			if (!!state == 1) {
+				/* sys_sync(); */
+				pr_info("%s: KEY_POWER pressed, calling sys_sync()\n", __func__);
+				queue_work(sync_work_queue, &sync_system_work);
+			}
+		}
 	}
 }
 
@@ -1136,8 +1173,16 @@ static struct platform_driver gpio_keys_device_driver = {
 	}
 };
 
+static void set_boost_off(struct work_struct *work)
+{
+	pr_info("%s: freeing late_resume cpufreq lock\n", __func__);
+	exynos_cpufreq_lock_free(DVFS_LOCK_ID_LATE_RESUME);
+}
+
 static int __init gpio_keys_init(void)
 {
+	gpio_boost_queue = create_singlethread_workqueue("gpio_boost_work");
+	INIT_DELAYED_WORK(&boost_off, set_boost_off);
 	return platform_driver_register(&gpio_keys_device_driver);
 }
 
