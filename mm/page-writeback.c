@@ -761,7 +761,8 @@ void writeback_set_ratelimit(void)
 }
 
 static int __cpuinit
-ratelimit_handler(struct notifier_block *self, unsigned long action, void *hcpu)
+ratelimit_handler(struct notifier_block *self, unsigned long action,
+		  void *hcpu)
 {
 
 	switch (action & ~CPU_TASKS_FROZEN) {
